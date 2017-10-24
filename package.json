@@ -4,7 +4,8 @@
   "description": "Generates customer profile/restaurant preferences based on clicks, check-ins, and reviews.",
   "main": "server/index.js",
   "scripts": {
-    "test": "mocha --bail --reporter nyan test/serverSpec.js; pkill -n node;"
+    "test": "mocha --bail --reporter nyan test/serverSpec.js; pkill -n node;",
+    "start": "nodemon server/index.js"
   },
   "repository": {
     "type": "git",
