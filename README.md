@@ -1,10 +1,10 @@
-# Project Name
+# Yelp-alitics Customer Profiler
 
-The project description
+Generates customer profile/restaurant preferences based on clicks, check-ins, and reviews.
 
 ## Roadmap
 
-View the project roadmap [here](LINK_TO_DOC)
+View the project roadmap [here](https://docs.google.com/spreadsheets/d/1KmNzdBwZN6pfllJ3b-JZxu4imRT7uQpOzQDzl5VosUI/edit?usp=sharing)
 
 ## Contributing
 
@@ -24,12 +24,15 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
 ## Requirements
 
-- Node 6.9.x
-- Redis 3.2.x
-- Postgresql 9.6.x
-- etc
+- Node 6.11.1
+- Postgresql 10.0
+- Express 4.16.2
+- Sequelize 4.15.1
+
+## Installing Dependencies
+npm install
 
 ## Other Information
 
-(TODO: fill this out with details about your project. Suggested ideas: architecture diagram, schema, and any other details from your app plan that sound interesting.)
-
+[Architecture diagram](https://drive.google.com/file/d/0B9cmTzZi_cK_VGNyejlVay1UQ0E/view?usp=sharing)
+[Schema](https://drive.google.com/file/d/0B9cmTzZi_cK_WVVEOVhSaHRqZWM/view?usp=sharing)

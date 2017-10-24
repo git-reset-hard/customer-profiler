@@ -1,0 +1,28 @@
+{
+  "name": "customer-profiler",
+  "version": "1.0.0",
+  "description": "Generates customer profile/restaurant preferences based on clicks, check-ins, and reviews.",
+  "main": "server/index.js",
+  "scripts": {
+    "test": "mocha --bail --reporter nyan test/serverSpec.js; pkill -n node;"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/git-reset-hard/customer-profiler.git"
+  },
+  "author": "Christie Villanueva",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/git-reset-hard/customer-profiler/issues"
+  },
+  "homepage": "https://github.com/git-reset-hard/customer-profiler#readme",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1"
+  },
+  "dependencies": {
+    "express": "^4.16.2",
+    "pg": "^7.3.0",
+    "sequelize": "^4.15.1"
+  }
+}
