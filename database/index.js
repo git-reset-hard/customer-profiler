@@ -50,9 +50,11 @@ const User = sequelize.define('user', {
 });
 
 const Restaurant = sequelize.define('restaurant', {
-  profile: {
-    type: Sequelize.JSONB
-  }
+  latitude: Sequelize.FLOAT,
+  longitude: Sequelize.FLOAT,
+  priceRange: Sequelize.INTEGER,
+  rating: Sequelize.INTEGER,
+  categories: Sequelize.JSONB
 });
 
 const Query = sequelize.define('query', {
