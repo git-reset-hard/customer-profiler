@@ -1,26 +1,13 @@
-// Set up database connection and define schema
-
-const config = require('../config/config.js');
+const config = require('./config/config.js');
 const Sequelize = require('sequelize');
-const helpers = require('../helpers/helpers.js');
+const helpers = require('./helpers/helpers.js');
+const faker = require('Faker');
 
 const sequelize = new Sequelize(config.database, config.username, config.password, {
   host: config.host,
   dialect: 'postgres',
   port: config.databasePort
 });
-
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully.');
-  })
-  .then(() => {
-
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
 
 const User = sequelize.define('user', {
   // need name to populate reviews if passing unique users to RP
@@ -114,51 +101,72 @@ Click.belongsTo(User);
 Click.belongsTo(Restaurant);
 Click.belongsTo(Query);
 
-// INITIAL TABLE CREATION
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .then(() => {
+    return User.sync({force: true});
+  })
+  .then(() => {
+    return Restaurant.sync({force: true});
+  })
+  .then(() => {
+    return Query.sync({force: true});
+  })
+  .then(() => {
+    return Check_In.sync({force: true});
+  })
+  .then(() => {
+    return Review.sync({force: true});
+  })
+  .then(() => {
+    return Click.sync({force: true});
+  })
+  .then(() => {
+    makeRandomUsers(5);
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 
-// TODO: Switch to force: false when DB is populated
-// force: true will drop the table if it already exists
-// User.sync({force: true})
-//   .then(() => {
-//     return Restaurant.sync({force: true});
-//   })
-//   .then(() => {
-//     return Query.sync({force: true});
-//   })
-//   .then(() => {
-//     return Check_In.sync({force: true});
-//   })
-//   .then(() => {
-//     return Review.sync({force: true});
-//   })
-//   .then(() => {
-//     return Click.sync({force: true});
-//   });
+const makeRandomUsers = function(n) {
+  const minClicks = 5;
+  const maxClicks = 500;
+  const minCheckIns = 0;
+  const maxCheckIns = 100;
+  const minReviews = 0;
+  const maxReviews = 150;
+  const numOfRestaurants = 50;
+  const numOfQueries = 1000;
 
-// const users = [
-//   {
-//     name: 'hello',
-//     // gets_recommendations: 0
-//   },
-//   {
-//     name: 'world',
-//     // gets_recommendations: 1,
-//     // star_importance: 1
-//   },
-// ];
+  let users = [];
+  let clicks = [];
 
-// // User.create(users[1]);
-// User.bulkCreate(users)
-//   .then((result) => {
-//     console.log(result);
-//   });
+  for (var i = 1; i <= n; i++) {
+    users.push({
+      name: faker.name.firstName() + ' ' + faker.name.lastName(),
+      gets_recommendations: Math.round(Math.random()),
+      home_city: faker.address.city() // TODO: Switch to US cities with state
+    });
 
-module.exports = {
-  sequelize: sequelize,
-  User: User,
-  Restaurant: Restaurant,
-  Query: Query,
-  Check_In: Check_In,
-  Review: Review,
-  Click: Click
+    var newClicks = helpers.makeRandomClicks(i, helpers.randomizeRangeInclusive(minClicks, maxClicks), numOfRestaurants, numOfQueries);
+
+    clicks = clicks.concat(newClicks);
+  }
+
+  User.bulkCreate(users)
+    .then(() => {
+      return Query.bulkCreate(helpers.makeRandomQueries(numOfQueries));
+    })
+    .then(() => {
+      return Restaurant.bulkCreate(helpers.makeRandomRestaurants(numOfRestaurants));
+    })
+    .then(() => {
+      return Click.bulkCreate(clicks);
+    })
+    .catch((err) => {
+      console.log('error: ', err);
+    });
 };
