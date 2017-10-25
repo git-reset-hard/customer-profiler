@@ -1,9 +1,9 @@
 const faker = require('Faker');
 const randomLatitude = require('random-latitude');
 const randomLongitude = require('random-longitude');
-// const db = require('../database/index.js');
 const randomDate = require('random-date-generator');
 const randomZipcode = require('random-zipcode');
+const randomText = require('txtgen');
 faker.locale = 'en_US';
 
 // Note: async, does not work as-is
@@ -28,18 +28,37 @@ const makeRandomClicks = function(userId, n, maxRestaurantId, maxQueries) {
     });
   }
 
-  console.log('click len for this user: ', clicks.length);
-
   return clicks;
 };
 
 const makeRandomCheckIns = function(userId, n, maxRestaurantId) {
-  makeRandomDateTime();
+  let checkIns = [];
+
+  for (var i = 1; i <= n; i++) {
+    checkIns.push({
+      userId: userId,
+      restaurantId: randomizeRangeInclusive(1, maxRestaurantId),
+      time: makeRandomDateTime()
+    });
+  }
+
+  return checkIns;
 };
 
 const makeRandomReviews = function(userId, n, maxRestaurantId) {
-  makeRandomDateTime();
+  let reviews = [];
 
+  for (var i = 1; i <= n; i++) {
+    reviews.push({
+      userId: userId,
+      restaurantId: randomizeRangeInclusive(1, maxRestaurantId),
+      star_rating: randomizeRangeInclusive(1, 5),
+      time: makeRandomDateTime(),
+      body: randomText.paragraph()
+    });
+  }
+
+  return reviews;
 };
 
 const randomizeRangeInclusive = function(min, max) {
@@ -115,5 +134,7 @@ module.exports = {
   makeRandomClicks: makeRandomClicks,
   randomizeRangeInclusive: randomizeRangeInclusive,
   makeRandomRestaurants: makeRandomRestaurants,
-  makeRandomQueries: makeRandomQueries  
+  makeRandomQueries: makeRandomQueries,
+  makeRandomCheckIns: makeRandomCheckIns,
+  makeRandomReviews: makeRandomReviews
 };

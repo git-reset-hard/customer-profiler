@@ -29,6 +29,7 @@
     "random-latitude": "^1.0.1",
     "random-longitude": "^1.0.1",
     "random-zipcode": "^1.0.2",
-    "sequelize": "^4.15.1"
+    "sequelize": "^4.15.1",
+    "txtgen": "^2.0.1"
   }
 }

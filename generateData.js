@@ -143,6 +143,8 @@ const makeRandomUsers = function(n) {
 
   let users = [];
   let clicks = [];
+  let checkIns = [];
+  let reviews = [];
 
   for (var i = 1; i <= n; i++) {
     users.push({
@@ -151,9 +153,11 @@ const makeRandomUsers = function(n) {
       home_city: faker.address.city() // TODO: Switch to US cities with state
     });
 
-    var newClicks = helpers.makeRandomClicks(i, helpers.randomizeRangeInclusive(minClicks, maxClicks), numOfRestaurants, numOfQueries);
+    clicks = clicks.concat(helpers.makeRandomClicks(i, helpers.randomizeRangeInclusive(minClicks, maxClicks), numOfRestaurants, numOfQueries));
+    checkIns = checkIns.concat(helpers.makeRandomCheckIns(i, helpers.randomizeRangeInclusive(minCheckIns, maxCheckIns), numOfRestaurants));
+    reviews = reviews.concat(helpers.makeRandomReviews(i, helpers.randomizeRangeInclusive(minReviews, maxReviews), numOfRestaurants));
 
-    clicks = clicks.concat(newClicks);
+    // TODO: add checkins and reviews for user
   }
 
   User.bulkCreate(users)
@@ -166,6 +170,13 @@ const makeRandomUsers = function(n) {
     .then(() => {
       return Click.bulkCreate(clicks);
     })
+    .then(() => {
+      return Check_In.bulkCreate(checkIns);
+    })
+    .then(() => {
+      return Review.bulkCreate(reviews);
+    })
+    // TODO: add checkins and reviews to DB
     .catch((err) => {
       console.log('error: ', err);
     });
