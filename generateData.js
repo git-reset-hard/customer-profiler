@@ -4,17 +4,22 @@ const helpers = require('./helpers/helpers.js');
 const faker = require('Faker');
 // const shortId = require('shortid');
 
-const iterations = 2;
+const iterations = 40000 / 1000; //40 * 1000
 let currentIteration = 1;
+const restIterations = 50; //40
+let currentRestIteration = 1;
+const queryIterations = 2000; 
+let currentQueryIteration = 1;
 
 const minClicks = 5;
 const maxClicks = 500; // 500
 const minCheckIns = 1;
-const maxCheckIns = 500; // 100
+const maxCheckIns = 100; // 100
 const minReviews = 1;
 const maxReviews = 150; // 150
-const numOfRestaurants = 500; //500
-const numOfQueries = 1000; // 1000
+
+const numOfRestaurants = 50000; //50000
+const numOfQueries = 2000000; // 2000000
 
 
 const sequelize = new Sequelize(config.database, config.username, config.password, {
@@ -193,6 +198,32 @@ sequelize
     console.error('Unable to connect to the database:', err);
   });
 
+const makeRestaurantBatch = function() {
+  console.log('making rest batches');
+
+  let restPromises = [];
+
+  for (var i = 0; i <= restIterations; i++) {
+    restPromises.push(Restaurant.bulkCreate(helpers.makeRandomRestaurants(1000)));
+    currentRestIteration++;
+  }
+
+  return Promise.all(restPromises);
+};
+
+const makeQueryBatch = function() {
+  console.log('making query batches');
+
+  let queryPromises = [];
+
+  for (var i = 0; i <= queryIterations; i++) {
+    queryPromises.push(Query.bulkCreate(helpers.makeRandomQueries(1000)));
+    currentQueryIteration++;
+  }
+
+  return Promise.all(queryPromises);
+};
+
 // create and insert batch of users into DB
 const makeUserBatch = function(n) {
   let users = [];
@@ -202,17 +233,16 @@ const makeUserBatch = function(n) {
   let userId;
   
   for (var i = 1; i <= n; i++) {
+    // maintain correct uID throughout batches
     userId = i * currentIteration;
 
-    console.log('user in batch = ', i);
-
     users.push({
-      // id: userId,
       name: faker.name.firstName() + ' ' + faker.name.lastName(),
       gets_recommendations: Math.round(Math.random()),
       home_city: faker.address.city() // TODO: Switch to US cities with state
     });
 
+    // all user activity assigned on user creation
     clicks = clicks.concat(helpers.makeRandomClicks(userId, helpers.randomizeRangeInclusive(minClicks, maxClicks), numOfRestaurants, numOfQueries));
     checkIns = checkIns.concat(helpers.makeRandomCheckIns(userId, helpers.randomizeRangeInclusive(minCheckIns, maxCheckIns), numOfRestaurants));
     reviews = reviews.concat(helpers.makeRandomReviews(userId, helpers.randomizeRangeInclusive(minReviews, maxReviews), numOfRestaurants));
@@ -236,26 +266,22 @@ const makeUserBatch = function(n) {
 const makeRandomUsers = function() {
   userPromises = [];
 
-  // make a user and associate clicks, check-ins, reviews to user
-  Query.bulkCreate(helpers.makeRandomQueries(numOfQueries))
+  makeQueryBatch()
     .then(() => {
-      console.log('Adding rests');
-      return Restaurant.bulkCreate(helpers.makeRandomRestaurants(numOfRestaurants));
+      console.log('Start making restaurant batches');
+      return makeRestaurantBatch();
     })
     .then(() => {
       for (var i = 0; i <= iterations; i++) {
-        userPromises.push(makeUserBatch(100));
+        userPromises.push(makeUserBatch(1000));
         currentIteration++;
       }
-      console.log('Calling user promises with len ', userPromises.length);
       return Promise.all(userPromises); 
     })
     .then(() => {
-      console.log('Done loading data'); // why isn't this printed last?
+      console.log('Done loading data');
     })
     .catch((err) => {
       console.log('Error loading data: ', err);
     });
-
-
 };
