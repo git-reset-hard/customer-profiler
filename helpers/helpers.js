@@ -23,7 +23,6 @@ const makeRandomClicks = function(userId, n, maxRestaurantId, maxQueries) {
       // id: shortId.generate(),
       userId: userId,
       restaurantId: randomizeRangeInclusive(1, maxRestaurantId),
-      list_id: randomizeRangeInclusive(1, 10000),
       queryId: randomizeRangeInclusive(1, maxQueries),
       time: makeRandomDateTime()
     });
@@ -128,7 +127,8 @@ const makeRandomQueries = function(n) {
     queries.push({
       // id: shortId.generate(),
       search_term: faker.random.word(),
-      location: randomZipCode()
+      location: randomZipCode(),
+      list_id: randomizeRangeInclusive(1, 10000), // lists not stored in this service's DB
     });
   }
 

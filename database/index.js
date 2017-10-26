@@ -24,10 +24,12 @@ sequelize
 
 const User = sequelize.define('user', {
   // need name to populate reviews if passing unique users to RP
-  // id: {
-  //   type: Sequelize.STRING,
-  //   primaryKey: true
-  // },
+  id: {
+    type: Sequelize.STRING,
+    primaryKey: true,
+    autoIncrement: true,
+
+  },
   name: {
     type: Sequelize.TEXT
   },
@@ -55,6 +57,14 @@ const User = sequelize.define('user', {
   personality: {
     type: Sequelize.JSONB // watson object
   }
+}, 
+{
+  indexes: [
+    {
+      unique: true,
+      fields: ['id']
+    }
+  ]
 });
 
 const Restaurant = sequelize.define('restaurant', {
@@ -67,6 +77,14 @@ const Restaurant = sequelize.define('restaurant', {
   priceRange: Sequelize.INTEGER,
   rating: Sequelize.INTEGER,
   categories: Sequelize.JSONB
+}, 
+{
+  indexes: [
+    {
+      unique: true,
+      fields: ['id']
+    }
+  ]
 });
 
 const Query = sequelize.define('query', {
@@ -79,7 +97,18 @@ const Query = sequelize.define('query', {
   },
   location: {
     type: Sequelize.TEXT
-  }
+  },
+  list_id: {
+    type: Sequelize.INTEGER
+  },
+}, 
+{
+  indexes: [
+    {
+      unique: true,
+      fields: ['id']
+    }
+  ]
 });
 
 const Check_In = sequelize.define('check_in', {
@@ -93,6 +122,14 @@ const Check_In = sequelize.define('check_in', {
   time: {
     type: Sequelize.DATE
   }
+}, 
+{
+  indexes: [
+    {
+      unique: true,
+      fields: ['id']
+    }
+  ]
 });
 
 Check_In.belongsTo(User);
@@ -113,6 +150,14 @@ const Review = sequelize.define('review', {
   body: {
     type: Sequelize.TEXT
   }
+}, 
+{
+  indexes: [
+    {
+      unique: true,
+      fields: ['id']
+    }
+  ]
 });
 
 Review.belongsTo(User);
@@ -123,15 +168,23 @@ const Click = sequelize.define('click', {
   //   type: Sequelize.STRING,
   //   primaryKey: true
   // },  
-  list_id: {
-    type: Sequelize.INTEGER
-  },
+  // list_id: {
+  //   type: Sequelize.INTEGER
+  // },
   distance: {
     type: Sequelize.FLOAT
   },
   time: {
     type: Sequelize.DATE
   }
+}, 
+{
+  indexes: [
+    {
+      unique: true,
+      fields: ['id']
+    }
+  ]
 });
 
 Click.belongsTo(User);

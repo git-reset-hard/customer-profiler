@@ -243,7 +243,7 @@ const makeRandomUsers = function() {
     })
     .then(() => {
       for (var i = 0; i <= iterations; i++) {
-        userPromises.push(makeUserBatch(500));
+        userPromises.push(makeUserBatch(100));
         currentIteration++;
       }
       console.log('Calling user promises with len ', userPromises.length);
