@@ -193,6 +193,7 @@ sequelize
     console.error('Unable to connect to the database:', err);
   });
 
+// create and insert batch of users into DB
 const makeUserBatch = function(n) {
   let users = [];
   let clicks = [];

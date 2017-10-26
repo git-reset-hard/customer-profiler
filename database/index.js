@@ -191,51 +191,12 @@ Click.belongsTo(User);
 Click.belongsTo(Restaurant);
 Click.belongsTo(Query);
 
-// INITIAL TABLE CREATION
-
-// TODO: Switch to force: false when DB is populated
-// force: true will drop the table if it already exists
-// User.sync({force: true})
-//   .then(() => {
-//     return Restaurant.sync({force: true});
-//   })
-//   .then(() => {
-//     return Query.sync({force: true});
-//   })
-//   .then(() => {
-//     return Check_In.sync({force: true});
-//   })
-//   .then(() => {
-//     return Review.sync({force: true});
-//   })
-//   .then(() => {
-//     return Click.sync({force: true});
-//   });
-
-// const users = [
-//   {
-//     name: 'hello',
-//     // gets_recommendations: 0
-//   },
-//   {
-//     name: 'world',
-//     // gets_recommendations: 1,
-//     // star_importance: 1
-//   },
-// ];
-
-// // User.create(users[1]);
-// User.bulkCreate(users)
-//   .then((result) => {
-//     console.log(result);
-//   });
-
 module.exports = {
-  sequelize: sequelize,
-  User: User,
-  Restaurant: Restaurant,
-  Query: Query,
-  Check_In: Check_In,
-  Review: Review,
-  Click: Click
+  sequelize,
+  User,
+  Restaurant,
+  Query,
+  Check_In,
+  Review,
+  Click
 };

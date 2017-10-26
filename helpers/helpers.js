@@ -136,10 +136,10 @@ const makeRandomQueries = function(n) {
 };
 
 module.exports = {
-  makeRandomClicks: makeRandomClicks,
-  randomizeRangeInclusive: randomizeRangeInclusive,
-  makeRandomRestaurants: makeRandomRestaurants,
-  makeRandomQueries: makeRandomQueries,
-  makeRandomCheckIns: makeRandomCheckIns,
-  makeRandomReviews: makeRandomReviews
+  makeRandomClicks,
+  randomizeRangeInclusive,
+  makeRandomRestaurants,
+  makeRandomQueries,
+  makeRandomCheckIns,
+  makeRandomReviews
 };
