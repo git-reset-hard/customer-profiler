@@ -2,15 +2,37 @@ const config = require('./config/config.js');
 const Sequelize = require('sequelize');
 const helpers = require('./helpers/helpers.js');
 const faker = require('Faker');
+// const shortId = require('shortid');
+
+const iterations = 2;
+let currentIteration = 1;
+
+const minClicks = 5;
+const maxClicks = 500; // 500
+const minCheckIns = 1;
+const maxCheckIns = 500; // 100
+const minReviews = 1;
+const maxReviews = 150; // 150
+const numOfRestaurants = 500; //500
+const numOfQueries = 1000; // 1000
+
 
 const sequelize = new Sequelize(config.database, config.username, config.password, {
   host: config.host,
   dialect: 'postgres',
-  port: config.databasePort
-});
+  port: config.databasePort,
+  logging: false});
 
 const User = sequelize.define('user', {
   // need name to populate reviews if passing unique users to RP
+  // id: {
+  //   type: Sequelize.STRING,
+  //   primaryKey: true
+  // },
+  // numId: {
+  //   type: Sequelize.INTEGER,
+  //   autoIncrement: true
+  // },
   name: {
     type: Sequelize.TEXT
   },
@@ -41,6 +63,14 @@ const User = sequelize.define('user', {
 });
 
 const Restaurant = sequelize.define('restaurant', {
+  // id: {
+  //   type: Sequelize.STRING,
+  //   primaryKey: true
+  // },
+  // numId: {
+  //   type: Sequelize.INTEGER,
+  //   autoIncrement: true
+  // },
   latitude: Sequelize.FLOAT,
   longitude: Sequelize.FLOAT,
   priceRange: Sequelize.INTEGER,
@@ -49,6 +79,14 @@ const Restaurant = sequelize.define('restaurant', {
 });
 
 const Query = sequelize.define('query', {
+  // id: {
+  //   type: Sequelize.STRING,
+  //   primaryKey: true
+  // },
+  // numId: {
+  //   type: Sequelize.INTEGER,
+  //   autoIncrement: true
+  // },
   search_term: {
     type: Sequelize.TEXT
   },
@@ -58,6 +96,14 @@ const Query = sequelize.define('query', {
 });
 
 const Check_In = sequelize.define('check_in', {
+  // id: {
+  //   type: Sequelize.STRING,
+  //   primaryKey: true
+  // },  
+  // numId: {
+  //   type: Sequelize.INTEGER,
+  //   autoIncrement: true
+  // },
   distance: {
     type: Sequelize.FLOAT
   },
@@ -71,6 +117,14 @@ Check_In.belongsTo(Restaurant);
 
 
 const Review = sequelize.define('review', {
+  // id: {
+  //   type: Sequelize.STRING,
+  //   primaryKey: true
+  // },
+  // numId: {
+  //   type: Sequelize.INTEGER,
+  //   autoIncrement: true
+  // },
   star_rating: {
     type: Sequelize.INTEGER
   },
@@ -86,6 +140,14 @@ Review.belongsTo(User);
 Review.belongsTo(Restaurant);
 
 const Click = sequelize.define('click', {
+  // id: {
+  //   type: Sequelize.STRING,
+  //   primaryKey: true
+  // },  
+  // numId: {
+  //   type: Sequelize.INTEGER,
+  //   autoIncrement: true
+  // },
   list_id: {
     type: Sequelize.INTEGER
   },
@@ -107,77 +169,93 @@ sequelize
     console.log('Connection has been established successfully.');
   })
   .then(() => {
-    return User.sync({force: true});
+    return User.sync({force: false});
   })
   .then(() => {
-    return Restaurant.sync({force: true});
+    return Restaurant.sync({force: false});
   })
   .then(() => {
-    return Query.sync({force: true});
+    return Query.sync({force: false});
   })
   .then(() => {
-    return Check_In.sync({force: true});
+    return Check_In.sync({force: false});
   })
   .then(() => {
-    return Review.sync({force: true});
+    return Review.sync({force: false});
   })
   .then(() => {
-    return Click.sync({force: true});
+    return Click.sync({force: false});
   })
   .then(() => {
-    makeRandomUsers(5);
+    makeRandomUsers();
   })
   .catch(err => {
     console.error('Unable to connect to the database:', err);
   });
 
-const makeRandomUsers = function(n) {
-  const minClicks = 5;
-  const maxClicks = 500;
-  const minCheckIns = 0;
-  const maxCheckIns = 100;
-  const minReviews = 0;
-  const maxReviews = 150;
-  const numOfRestaurants = 50;
-  const numOfQueries = 1000;
-
+// create and insert batch of users into DB
+const makeUserBatch = function(n) {
   let users = [];
   let clicks = [];
   let checkIns = [];
   let reviews = [];
-
+  let userId;
+  
   for (var i = 1; i <= n; i++) {
+    userId = i * currentIteration;
+
+    console.log('user in batch = ', i);
+
     users.push({
+      // id: userId,
       name: faker.name.firstName() + ' ' + faker.name.lastName(),
       gets_recommendations: Math.round(Math.random()),
       home_city: faker.address.city() // TODO: Switch to US cities with state
     });
 
-    clicks = clicks.concat(helpers.makeRandomClicks(i, helpers.randomizeRangeInclusive(minClicks, maxClicks), numOfRestaurants, numOfQueries));
-    checkIns = checkIns.concat(helpers.makeRandomCheckIns(i, helpers.randomizeRangeInclusive(minCheckIns, maxCheckIns), numOfRestaurants));
-    reviews = reviews.concat(helpers.makeRandomReviews(i, helpers.randomizeRangeInclusive(minReviews, maxReviews), numOfRestaurants));
-
-    // TODO: add checkins and reviews for user
+    clicks = clicks.concat(helpers.makeRandomClicks(userId, helpers.randomizeRangeInclusive(minClicks, maxClicks), numOfRestaurants, numOfQueries));
+    checkIns = checkIns.concat(helpers.makeRandomCheckIns(userId, helpers.randomizeRangeInclusive(minCheckIns, maxCheckIns), numOfRestaurants));
+    reviews = reviews.concat(helpers.makeRandomReviews(userId, helpers.randomizeRangeInclusive(minReviews, maxReviews), numOfRestaurants));
   }
 
-  User.bulkCreate(users)
+  return User.bulkCreate(users)
     .then(() => {
-      return Query.bulkCreate(helpers.makeRandomQueries(numOfQueries));
-    })
-    .then(() => {
-      return Restaurant.bulkCreate(helpers.makeRandomRestaurants(numOfRestaurants));
-    })
-    .then(() => {
-      return Click.bulkCreate(clicks);
-    })
-    .then(() => {
+      console.log('Adding checkins');
       return Check_In.bulkCreate(checkIns);
     })
     .then(() => {
       return Review.bulkCreate(reviews);
+      console.log('Adding reviews');
     })
-    // TODO: add checkins and reviews to DB
-    .catch((err) => {
-      console.log('error: ', err);
+    .then(() => {
+      console.log('adding clicks, last step of user batch');
+      return Click.bulkCreate(clicks);
     });
+};
+
+const makeRandomUsers = function() {
+  userPromises = [];
+
+  // make a user and associate clicks, check-ins, reviews to user
+  Query.bulkCreate(helpers.makeRandomQueries(numOfQueries))
+    .then(() => {
+      console.log('Adding rests');
+      return Restaurant.bulkCreate(helpers.makeRandomRestaurants(numOfRestaurants));
+    })
+    .then(() => {
+      for (var i = 0; i <= iterations; i++) {
+        userPromises.push(makeUserBatch(100));
+        currentIteration++;
+      }
+      console.log('Calling user promises with len ', userPromises.length);
+      return Promise.all(userPromises); 
+    })
+    .then(() => {
+      console.log('Done loading data'); // why isn't this printed last?
+    })
+    .catch((err) => {
+      console.log('Error loading data: ', err);
+    });
+
+
 };

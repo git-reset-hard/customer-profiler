@@ -2,9 +2,10 @@ const faker = require('Faker');
 const randomLatitude = require('random-latitude');
 const randomLongitude = require('random-longitude');
 const randomDate = require('random-date-generator');
-const randomZipcode = require('random-zipcode');
+const randomZipCode = require('random-zipcode');
 const randomText = require('txtgen');
 faker.locale = 'en_US';
+// const shortId = require('shortid');
 
 // Note: async, does not work as-is
 const pickRandomRestaurant = function() {
@@ -17,12 +18,11 @@ const pickRandomRestaurant = function() {
 const makeRandomClicks = function(userId, n, maxRestaurantId, maxQueries) {
   let clicks = [];
 
-  console.log('making ' + n + ' clicks for user ' + userId);
   for (var i = 1; i <= n; i++) {
     clicks.push({
+      // id: shortId.generate(),
       userId: userId,
       restaurantId: randomizeRangeInclusive(1, maxRestaurantId),
-      list_id: randomizeRangeInclusive(1, 10000),
       queryId: randomizeRangeInclusive(1, maxQueries),
       time: makeRandomDateTime()
     });
@@ -36,6 +36,7 @@ const makeRandomCheckIns = function(userId, n, maxRestaurantId) {
 
   for (var i = 1; i <= n; i++) {
     checkIns.push({
+      // id: shortId.generate(),
       userId: userId,
       restaurantId: randomizeRangeInclusive(1, maxRestaurantId),
       time: makeRandomDateTime()
@@ -50,6 +51,7 @@ const makeRandomReviews = function(userId, n, maxRestaurantId) {
 
   for (var i = 1; i <= n; i++) {
     reviews.push({
+      // id: shortId.generate(),
       userId: userId,
       restaurantId: randomizeRangeInclusive(1, maxRestaurantId),
       star_rating: randomizeRangeInclusive(1, 5),
@@ -78,7 +80,7 @@ const randomizeCategories = function() {
   const numToGenerate = randomizeRangeInclusive(1, 3);
 
   for (var i = 0; i <= numToGenerate; i++) {
-    categoryIndex = randomizeRangeInclusive(0, allCategories.length);
+    categoryIndex = randomizeRangeInclusive(0, allCategories.length - 1);
 
     if (!randomCategories.includes(allCategories[categoryIndex])) {
       randomCategories.push(allCategories[categoryIndex]);
@@ -100,6 +102,7 @@ const makeRandomRestaurants = function(n) {
 
   for (var i = 0; i < n; i++) {
     restaurants.push({
+      // id: shortId.generate(),
       latitude: randomLatitude(),
       longitude: randomLongitude(),
       priceRange: randomizeRangeInclusive(1, 4),
@@ -122,8 +125,10 @@ const makeRandomQueries = function(n) {
   let queries = [];
   for (var i = 0; i < n; i++) {
     queries.push({
+      // id: shortId.generate(),
       search_term: faker.random.word(),
-      location: randomZipcode()
+      location: randomZipCode(),
+      list_id: randomizeRangeInclusive(1, 10000), // lists not stored in this service's DB
     });
   }
 
@@ -131,10 +136,10 @@ const makeRandomQueries = function(n) {
 };
 
 module.exports = {
-  makeRandomClicks: makeRandomClicks,
-  randomizeRangeInclusive: randomizeRangeInclusive,
-  makeRandomRestaurants: makeRandomRestaurants,
-  makeRandomQueries: makeRandomQueries,
-  makeRandomCheckIns: makeRandomCheckIns,
-  makeRandomReviews: makeRandomReviews
+  makeRandomClicks,
+  randomizeRangeInclusive,
+  makeRandomRestaurants,
+  makeRandomQueries,
+  makeRandomCheckIns,
+  makeRandomReviews
 };
