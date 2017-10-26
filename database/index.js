@@ -2,6 +2,7 @@
 
 const config = require('../config/config.js');
 const Sequelize = require('sequelize');
+const helpers = require('../helpers/helpers.js');
 
 const sequelize = new Sequelize(config.database, config.username, config.password, {
   host: config.host,
@@ -13,6 +14,9 @@ sequelize
   .authenticate()
   .then(() => {
     console.log('Connection has been established successfully.');
+  })
+  .then(() => {
+
   })
   .catch(err => {
     console.error('Unable to connect to the database:', err);
@@ -50,9 +54,11 @@ const User = sequelize.define('user', {
 });
 
 const Restaurant = sequelize.define('restaurant', {
-  profile: {
-    type: Sequelize.JSONB
-  }
+  latitude: Sequelize.FLOAT,
+  longitude: Sequelize.FLOAT,
+  priceRange: Sequelize.INTEGER,
+  rating: Sequelize.INTEGER,
+  categories: Sequelize.JSONB
 });
 
 const Query = sequelize.define('query', {
@@ -127,6 +133,24 @@ Click.belongsTo(Query);
 //   })
 //   .then(() => {
 //     return Click.sync({force: true});
+//   });
+
+// const users = [
+//   {
+//     name: 'hello',
+//     // gets_recommendations: 0
+//   },
+//   {
+//     name: 'world',
+//     // gets_recommendations: 1,
+//     // star_importance: 1
+//   },
+// ];
+
+// // User.create(users[1]);
+// User.bulkCreate(users)
+//   .then((result) => {
+//     console.log(result);
 //   });
 
 module.exports = {
