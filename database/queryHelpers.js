@@ -22,10 +22,10 @@ const getUserPreferences = function(userId) {
 };
 
 // getUserPreferences sample output:
-// { star_importance: null,
-//   proximity_importance: null,
-//   price_importance: null,
-//   restaurant_variance: null }
+// { star_importance: .5,
+//   proximity_importance: .9,
+//   price_importance: .2,
+//   restaurant_variance: .5 }
 
 // db.sequelize.authenticate()
 //   .then(() => {
