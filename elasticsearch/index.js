@@ -13,5 +13,3 @@ client.ping({
     console.log('All is well');
   }
 });
-
--52.46838|-128.02485|2|2|"[{""alias"":""sushi"",""title"":""sushi""}]"|NOW()|NOW()
