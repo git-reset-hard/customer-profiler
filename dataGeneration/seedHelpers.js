@@ -7,8 +7,8 @@ const randomText = require('txtgen');
 faker.locale = 'en_US';
 
 const maxRestNum = 50000;
-const maxUsers = 40000;
-const maxQueries = 2000000;
+const maxUserNum = 40000;
+const maxQueryNum = 2000000;
 
 const randomizeRangeInclusive = function(min, max) {
   min = Math.ceil(min);
@@ -99,7 +99,7 @@ const createReview = function (id) {
     user_id: randomizeRangeInclusive(0, maxUserNum),
     star_rating: randomizeRangeInclusive(1, 5),
     time: makeRandomDateTime(),
-    body: randomText.paragraph()
+    body: randomText.paragraph() // parse before sending to analytics
   };
 };
 
@@ -119,5 +119,6 @@ module.exports = {
   createRestaurant,
   createQuery,
   createCheckIn,
-  createReview
+  createReview,
+  createClick
 };

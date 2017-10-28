@@ -1,12 +1,17 @@
 const fs = require('fs');
-const helpers = require('../helpers/helpers.js');
+const helpers = require('../dataGeneration/seedHelpers.js');
 
 const writeRestaurants = function() {
-  const writeStream = fs.createWriteStream('./data/seedRestaurants.txt', {flags: 'a'});
+  const writeStream = fs.createWriteStream('./data/seedRestaurants.json', {flags: 'a'});
 
+  writeStream.write('[');
   for (var i = 0; i < 50000; i++) {
-    writeStream.write(helpers.makeRandomRestaurant() + '|NOW()|NOW()\n');
+    if (i) {
+      writeStream.write(',');
+    }
+    writeStream.write(JSON.stringify(helpers.createRestaurant(i)));
   }
+  writeStream.write(']');
 
   writeStream.on('finish', () => {
     writeStream.close();

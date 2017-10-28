@@ -1,15 +1,15 @@
 const fs = require('fs');
 const helpers = require('../dataGeneration/seedHelpers.js');
 
-const writeQueries = function() {
-  const writeStream = fs.createWriteStream('./data/seedQueries.json', {flags: 'a'});
+const writeCheckIns = function() {
+  const writeStream = fs.createWriteStream('./data/seedCheckIns.json', {flags: 'a'});
 
   writeStream.write('[');
-  for (var i = 0; i < 2000000; i++) {
+  for (var i = 0; i < 200000; i++) {
     if (i) {
       writeStream.write(',');
     }
-    writeStream.write(JSON.stringify(helpers.createQuery(i)));
+    writeStream.write(JSON.stringify(helpers.createCheckIn(i)));
   }
   writeStream.write(']');
 
@@ -18,4 +18,4 @@ const writeQueries = function() {
   });
 };
 
-writeQueries();
+writeCheckIns();
