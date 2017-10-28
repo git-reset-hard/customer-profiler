@@ -8,6 +8,10 @@ faker.locale = 'en_US';
 // const shortId = require('shortid');
 
 // Note: async, does not work as-is
+
+const restaurantCount = 50000;
+const userCount = 40000;
+
 const pickRandomRestaurant = function() {
   db.Restaurant.count()
     .then((num) => {
@@ -114,12 +118,14 @@ const makeRandomRestaurants = function(n) {
   return restaurants;
 };
 
+
 const makeRandomDateTime = function() {
   let startDate = new Date(2017, 2, 1);
   let endDate = new Date(2017, 5, 1);
 
   return randomDate.getRandomDateInRange(startDate, endDate);
 };
+
 
 const makeRandomQueries = function(n) {
   let queries = [];
@@ -135,11 +141,50 @@ const makeRandomQueries = function(n) {
   return queries;
 };
 
+// *** DATA SEEDING HELPERS (RETURN STRINGS) *** //
+
+const escapeQuotes = function(str) {
+  return str.replace(/"/g, '""');
+};
+
+const makeRandomQuery = function() {
+  return `${JSON.stringify(faker.random.word()).replace(/"/g, '""')}|${randomZipCode()}|${randomizeRangeInclusive(1, 10000)}`;
+};
+
+const makeRandomRestaurant = function(n) {
+  let categories = JSON.stringify(randomizeCategories());
+  categories = categories.replace(/"/g, '""');
+  let restaurant = `${randomLatitude()}|${randomLongitude()}|${randomizeRangeInclusive(1, 4)}|${randomizeRangeInclusive(1, 5)}|"${categories}"`;
+  return restaurant;
+};
+
+const makeRandomUser = function() {
+  let user = {
+    name: faker.name.firstName() + ' ' + faker.name.lastName()[0] + '.',
+    gets_recommendations: Math.round(Math.random()),
+    home_city: faker.address.city(),
+    home_coordinates: {
+      latitude: randomLatitude(),
+      longitude: randomLongitude()
+    },
+    star_importance: Math.random(),
+    distance_importance: Math.random(),
+    price_importance: Math.random(),
+    restaurant_variance: Math.random(),
+    personality: { //JSON
+      personality: Array.from({length: 5}, () => Math.random()),
+      traits: Array.from({length: 12}, () => Math.round(Math.random())),
+      needs: Array.from({length: 12}, () => Math.random()),
+      values: Array.from({length: 12}, () => Math.random()), 
+    }
+  };
+  // not saving liked rests.; will query restaurants list to send to RE
+};
 module.exports = {
   makeRandomClicks,
   randomizeRangeInclusive,
-  makeRandomRestaurants,
-  makeRandomQueries,
+  makeRandomRestaurant,
+  makeRandomQuery,
   makeRandomCheckIns,
   makeRandomReviews
 };

@@ -1,15 +1,18 @@
-const config = require('./config/config.js');
+const config = require('../config/config.js');
 const Sequelize = require('sequelize');
-const helpers = require('./helpers/helpers.js');
+const helpers = require('../helpers/helpers.js');
 const faker = require('Faker');
 // const shortId = require('shortid');
 
-const iterations = 40000 / 1000; //40 * 1000
+// SWITCHED TO BATCHES OF 500 -- DOUBLE THESE #s
+const iterations = 4; //40 * 1000
 let currentIteration = 1;
-const restIterations = 50; //40
+const restIterations = 5; 
 let currentRestIteration = 1;
-const queryIterations = 2000; 
+const queryIterations = 5; 
 let currentQueryIteration = 1;
+// add var for curr UID to pull from instead of chaining within users
+let currentUserId;
 
 const minClicks = 5;
 const maxClicks = 500; // 500
@@ -29,15 +32,6 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
   logging: false});
 
 const User = sequelize.define('user', {
-  // need name to populate reviews if passing unique users to RP
-  // id: {
-  //   type: Sequelize.STRING,
-  //   primaryKey: true
-  // },
-  // numId: {
-  //   type: Sequelize.INTEGER,
-  //   autoIncrement: true
-  // },
   name: {
     type: Sequelize.TEXT
   },
@@ -68,14 +62,6 @@ const User = sequelize.define('user', {
 });
 
 const Restaurant = sequelize.define('restaurant', {
-  // id: {
-  //   type: Sequelize.STRING,
-  //   primaryKey: true
-  // },
-  // numId: {
-  //   type: Sequelize.INTEGER,
-  //   autoIncrement: true
-  // },
   latitude: Sequelize.FLOAT,
   longitude: Sequelize.FLOAT,
   priceRange: Sequelize.INTEGER,
@@ -84,14 +70,6 @@ const Restaurant = sequelize.define('restaurant', {
 });
 
 const Query = sequelize.define('query', {
-  // id: {
-  //   type: Sequelize.STRING,
-  //   primaryKey: true
-  // },
-  // numId: {
-  //   type: Sequelize.INTEGER,
-  //   autoIncrement: true
-  // },
   search_term: {
     type: Sequelize.TEXT
   },
@@ -101,14 +79,6 @@ const Query = sequelize.define('query', {
 });
 
 const Check_In = sequelize.define('check_in', {
-  // id: {
-  //   type: Sequelize.STRING,
-  //   primaryKey: true
-  // },  
-  // numId: {
-  //   type: Sequelize.INTEGER,
-  //   autoIncrement: true
-  // },
   distance: {
     type: Sequelize.FLOAT
   },
@@ -122,14 +92,6 @@ Check_In.belongsTo(Restaurant);
 
 
 const Review = sequelize.define('review', {
-  // id: {
-  //   type: Sequelize.STRING,
-  //   primaryKey: true
-  // },
-  // numId: {
-  //   type: Sequelize.INTEGER,
-  //   autoIncrement: true
-  // },
   star_rating: {
     type: Sequelize.INTEGER
   },
@@ -145,14 +107,6 @@ Review.belongsTo(User);
 Review.belongsTo(Restaurant);
 
 const Click = sequelize.define('click', {
-  // id: {
-  //   type: Sequelize.STRING,
-  //   primaryKey: true
-  // },  
-  // numId: {
-  //   type: Sequelize.INTEGER,
-  //   autoIncrement: true
-  // },
   list_id: {
     type: Sequelize.INTEGER
   },
@@ -174,50 +128,59 @@ sequelize
     console.log('Connection has been established successfully.');
   })
   .then(() => {
-    return User.sync({force: false});
+    return User.sync({force: true});
   })
   .then(() => {
-    return Restaurant.sync({force: false});
+    return Restaurant.sync({force: true});
   })
   .then(() => {
-    return Query.sync({force: false});
+    return Query.sync({force: true});
   })
   .then(() => {
-    return Check_In.sync({force: false});
+    return Check_In.sync({force: true});
   })
   .then(() => {
-    return Review.sync({force: false});
+    return Review.sync({force: true});
   })
   .then(() => {
-    return Click.sync({force: false});
+    return Click.sync({force: true});
   })
+  // .then(() => {
+  //   return makeRestaurants();
+  // })
+  // .then(() => {
+  //   return makeQueries();
+  // })
+  // .then(() => {
+  //   return makeRandomUsers();
+  // })
   .then(() => {
-    makeRandomUsers();
+    console.log('Done loading data');
   })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
+  .catch((err) => {
+    console.log('Error loading data: ', err);
   });
 
-const makeRestaurantBatch = function() {
+const makeRestaurants = function() {
   console.log('making rest batches');
 
   let restPromises = [];
 
-  for (var i = 0; i <= restIterations; i++) {
-    restPromises.push(Restaurant.bulkCreate(helpers.makeRandomRestaurants(1000)));
+  for (var i = 0; i < restIterations; i++) {
+    restPromises.push(Restaurant.bulkCreate(helpers.makeRandomRestaurants(10000)));
     currentRestIteration++;
   }
 
   return Promise.all(restPromises);
 };
 
-const makeQueryBatch = function() {
+const makeQueries = function() {
   console.log('making query batches');
 
   let queryPromises = [];
 
-  for (var i = 0; i <= queryIterations; i++) {
-    queryPromises.push(Query.bulkCreate(helpers.makeRandomQueries(1000)));
+  for (var i = 0; i < queryIterations; i++) {
+    queryPromises.push(Query.bulkCreate(helpers.makeRandomQueries(10000)));
     currentQueryIteration++;
   }
 
@@ -234,7 +197,8 @@ const makeUserBatch = function(n) {
   
   for (var i = 1; i <= n; i++) {
     // maintain correct uID throughout batches
-    userId = i * currentIteration;
+    userId = n * (currentIteration - 1) + i;
+    // console.log('creating user: ', userId);
 
     users.push({
       name: faker.name.firstName() + ' ' + faker.name.lastName(),
@@ -243,45 +207,38 @@ const makeUserBatch = function(n) {
     });
 
     // all user activity assigned on user creation
-    clicks = clicks.concat(helpers.makeRandomClicks(userId, helpers.randomizeRangeInclusive(minClicks, maxClicks), numOfRestaurants, numOfQueries));
-    checkIns = checkIns.concat(helpers.makeRandomCheckIns(userId, helpers.randomizeRangeInclusive(minCheckIns, maxCheckIns), numOfRestaurants));
-    reviews = reviews.concat(helpers.makeRandomReviews(userId, helpers.randomizeRangeInclusive(minReviews, maxReviews), numOfRestaurants));
+    // clicks = clicks.concat(helpers.makeRandomClicks(userId, helpers.randomizeRangeInclusive(minClicks, maxClicks), numOfRestaurants, numOfQueries));
+    // checkIns = checkIns.concat(helpers.makeRandomCheckIns(userId, helpers.randomizeRangeInclusive(minCheckIns, maxCheckIns), numOfRestaurants));
+    // reviews = reviews.concat(helpers.makeRandomReviews(userId, helpers.randomizeRangeInclusive(minReviews, maxReviews), numOfRestaurants));
   }
 
-  return User.bulkCreate(users)
-    .then(() => {
-      console.log('Adding checkins');
-      return Check_In.bulkCreate(checkIns);
-    })
-    .then(() => {
-      return Review.bulkCreate(reviews);
-      console.log('Adding reviews');
-    })
-    .then(() => {
-      console.log('adding clicks, last step of user batch');
-      return Click.bulkCreate(clicks);
-    });
+  return User.bulkCreate(users);
+    // .then(() => {
+    //   console.log('Adding checkins');
+    //   return Check_In.bulkCreate(checkIns);
+    // })
+    // .then(() => {
+    //   return Review.bulkCreate(reviews);
+    //   console.log('Adding reviews');
+    // })
+    // .then(() => {
+    //   console.log('adding clicks, last step of user batch');
+    //   return Click.bulkCreate(clicks);
+    // });
 };
 
 const makeRandomUsers = function() {
   userPromises = [];
 
-  makeQueryBatch()
-    .then(() => {
-      console.log('Start making restaurant batches');
-      return makeRestaurantBatch();
-    })
-    .then(() => {
-      for (var i = 0; i <= iterations; i++) {
-        userPromises.push(makeUserBatch(1000));
-        currentIteration++;
-      }
-      return Promise.all(userPromises); 
-    })
-    .then(() => {
-      console.log('Done loading data');
-    })
-    .catch((err) => {
-      console.log('Error loading data: ', err);
-    });
+  for (var i = 0; i < iterations; i++) {
+    console.log('User batch #: ', currentIteration);
+    userPromises.push(makeUserBatch(10000));
+    currentIteration++;
+  }
+
+  return Promise.all(userPromises);
+};
+
+module.exports = {
+  makeUserBatch
 };
