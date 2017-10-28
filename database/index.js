@@ -16,7 +16,22 @@ sequelize
     console.log('Connection has been established successfully.');
   })
   .then(() => {
-
+    return User.sync({force: false});
+  })
+  .then(() => {
+    return Restaurant.sync({force: false});
+  })
+  .then(() => {
+    return Query.sync({force: false});
+  })
+  .then(() => {
+    return Check_In.sync({force: false});
+  })
+  .then(() => {
+    return Review.sync({force: false});
+  })
+  .then(() => {
+    return Click.sync({force: false});
   })
   .catch(err => {
     console.error('Unable to connect to the database:', err);
@@ -68,10 +83,6 @@ const User = sequelize.define('user', {
 });
 
 const Restaurant = sequelize.define('restaurant', {
-  // id: {
-  //   type: Sequelize.STRING,
-  //   primaryKey: true
-  // },
   latitude: Sequelize.FLOAT,
   longitude: Sequelize.FLOAT,
   priceRange: Sequelize.INTEGER,
@@ -88,10 +99,6 @@ const Restaurant = sequelize.define('restaurant', {
 });
 
 const Query = sequelize.define('query', {
-  // id: {
-  //   type: Sequelize.STRING,
-  //   primaryKey: true
-  // },
   search_term: {
     type: Sequelize.TEXT
   },
@@ -112,10 +119,6 @@ const Query = sequelize.define('query', {
 });
 
 const Check_In = sequelize.define('check_in', {
-  // id: {
-  //   type: Sequelize.STRING,
-  //   primaryKey: true
-  // },  
   distance: {
     type: Sequelize.FLOAT
   },
@@ -137,10 +140,6 @@ Check_In.belongsTo(Restaurant);
 
 
 const Review = sequelize.define('review', {
-  // id: {
-  //   type: Sequelize.STRING,
-  //   primaryKey: true
-  // },
   star_rating: {
     type: Sequelize.INTEGER
   },
@@ -164,13 +163,6 @@ Review.belongsTo(User);
 Review.belongsTo(Restaurant);
 
 const Click = sequelize.define('click', {
-  // id: {
-  //   type: Sequelize.STRING,
-  //   primaryKey: true
-  // },  
-  // list_id: {
-  //   type: Sequelize.INTEGER
-  // },
   distance: {
     type: Sequelize.FLOAT
   },
