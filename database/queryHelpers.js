@@ -1,3 +1,6 @@
+// NOT IN USE; DO NOT REVIEW
+// TODO: Replace with Mongoose queries (currently Sequelize)
+
 const db = require('./index');
 const gen = require('../dataGeneration/generateData.js');
 
