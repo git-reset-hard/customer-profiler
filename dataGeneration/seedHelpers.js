@@ -10,6 +10,8 @@ const maxRestNum = 50000;
 const maxUserNum = 40000;
 const maxQueryNum = 2000000;
 
+// ****** RANDOM PROPERTY HELPERS ***** 
+
 const randomizeRangeInclusive = function(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -42,6 +44,8 @@ const randomizeCategories = function() {
 
   return randomCategories;
 };
+
+// ****** RANDOM ROW GENERATION ***** 
 
 const createUser = function (id) {
   return {
