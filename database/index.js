@@ -1,194 +1,105 @@
-// Set up database connection and define schema
+const mongoose = require('mongoose');
+autoIncrement = require('mongoose-auto-increment');
 
-const config = require('../config/config.js');
-const Sequelize = require('sequelize');
-const helpers = require('../helpers/helpers.js');
+mongoose.connect('mongodb://localhost/profiler');
+const db = mongoose.connection;
+autoIncrement.initialize(db);
 
-const sequelize = new Sequelize(config.database, config.username, config.password, {
-  host: config.host,
-  dialect: 'postgres',
-  port: config.databasePort
-});
+db.once('open', () => {
+  console.log('opened connection with db');
 
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully.');
-  })
-  .then(() => {
-    return User.sync({force: true});
-  })
-  .then(() => {
-    return Restaurant.sync({force: true});
-  })
-  .then(() => {
-    return Query.sync({force: true});
-  })
-  .then(() => {
-    return Check_In.sync({force: true});
-  })
-  .then(() => {
-    return Review.sync({force: true});
-  })
-  .then(() => {
-    return Click.sync({force: true});
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
+  const userSchema = mongoose.Schema({
+    _id: Number,
+    name: String,
+    gets_recommendations: Boolean,
+    distances_traveled: Array,
+    star_pref: Number,
+    distance_pref: Number,
+    price_pref: Number,
+    openness: Number,
+    hometown_latitude: Number,
+    hometown_longitude: Number,
+    hometown_city: String,
+    personality: Array,
+    traits: Array,
+    needs: Array,
+    values: Array
   });
 
-const User = sequelize.define('user', {
-  // need name to populate reviews if passing unique users to RP
-  id: {
-    type: Sequelize.STRING,
-    primaryKey: true,
-    autoIncrement: true,
+  const restaurantSchema = mongoose.Schema({
+    _id: Number,
+    latitude: Number,
+    longitude: Number,
+    priceRange: Number,
+    rating: Number,
+    categories: Array
+  });
 
-  },
-  name: {
-    type: Sequelize.TEXT
-  },
-  gets_recommendations: {
-    type: Sequelize.BOOLEAN
-  },
-  star_importance: {
-    type: Sequelize.FLOAT
-  },
-  proximity_importance: {
-    type: Sequelize.FLOAT
-  },
-  price_importance: {
-    type: Sequelize.FLOAT
-  },
-  restaurant_variance: {
-    type: Sequelize.FLOAT
-  },
-  home_city: {
-    type: Sequelize.STRING
-  },
-  home_coordinates: {
-    type: Sequelize.JSONB // lat, long
-  },
-  personality: {
-    type: Sequelize.JSONB // watson object
-  }
-}, 
-{
-  indexes: [
-    {
-      unique: true,
-      fields: ['id']
-    }
-  ]
+  const querySchema = mongoose.Schema({
+    _id: Number,
+    search_term: String,
+    location: Number,
+    list_id: Number
+  });
+
+  const checkInSchema = mongoose.Schema({
+    _id: Number,
+    restaurant_id: Number,
+    user_id: Number,
+    distance: Number,
+    time: Number
+  });
+
+  const reviewSchema = mongoose.Schema({
+    _id: Number,
+    restaurant_id: Number,
+    user_id: Number,
+    star_rating: Number,
+    distance: Number,
+    time: Date,
+    body: String
+  });
+
+  const clickSchema = mongoose.Schema({
+    _id: Number,
+    restaurant_id: Number,
+    user_id: Number,
+    query_id: Number,
+    time: Date
+  });
+
+
+  userSchema.plugin(autoIncrement.plugin, 'User');
+  const User = mongoose.model('User', userSchema);
+
+  querySchema.plugin(autoIncrement.plugin, 'Query');
+  const Query = mongoose.model('Query', querySchema);
+
+  checkInSchema.plugin(autoIncrement.plugin, 'CheckIn');
+  const CheckIn = mongoose.model('CheckIn', checkInSchema);
+
+  reviewSchema.plugin(autoIncrement.plugin, 'Review');
+  const Review = mongoose.model('Review', reviewSchema);
+
+  clickSchema.plugin(autoIncrement.plugin, 'Click');
+  const Click = mongoose.model('Click', clickSchema);
+
+  let parameters = {
+    name: 'hi'
+  };
+
+  let entry = new User(parameters);
+  entry.save((err, result) => {
+    console.log('saved entry, ', result);
+  });
 });
 
-const Restaurant = sequelize.define('restaurant', {
-  latitude: Sequelize.FLOAT,
-  longitude: Sequelize.FLOAT,
-  priceRange: Sequelize.INTEGER,
-  rating: Sequelize.INTEGER,
-  categories: Sequelize.JSONB
-}, 
-{
-  indexes: [
-    {
-      unique: true,
-      fields: ['id']
-    }
-  ]
-});
-
-const Query = sequelize.define('query', {
-  search_term: {
-    type: Sequelize.TEXT
-  },
-  location: {
-    type: Sequelize.TEXT
-  },
-  list_id: {
-    type: Sequelize.INTEGER
-  },
-}, 
-{
-  indexes: [
-    {
-      unique: true,
-      fields: ['id']
-    }
-  ]
-});
-
-const Check_In = sequelize.define('check_in', {
-  distance: {
-    type: Sequelize.FLOAT
-  },
-  time: {
-    type: Sequelize.DATE
-  }
-}, 
-{
-  indexes: [
-    {
-      unique: true,
-      fields: ['id']
-    }
-  ]
-});
-
-Check_In.belongsTo(User);
-Check_In.belongsTo(Restaurant);
-
-
-const Review = sequelize.define('review', {
-  star_rating: {
-    type: Sequelize.INTEGER
-  },
-  time: {
-    type: Sequelize.DATE
-  },
-  body: {
-    type: Sequelize.TEXT
-  }
-}, 
-{
-  indexes: [
-    {
-      unique: true,
-      fields: ['id']
-    }
-  ]
-});
-
-Review.belongsTo(User);
-Review.belongsTo(Restaurant);
-
-const Click = sequelize.define('click', {
-  distance: {
-    type: Sequelize.FLOAT
-  },
-  time: {
-    type: Sequelize.DATE
-  }
-}, 
-{
-  indexes: [
-    {
-      unique: true,
-      fields: ['id']
-    }
-  ]
-});
-
-Click.belongsTo(User);
-Click.belongsTo(Restaurant);
-Click.belongsTo(Query);
-
-module.exports = {
-  sequelize,
-  User,
-  Restaurant,
-  Query,
-  Check_In,
-  Review,
-  Click
-};
+// module.exports = {
+//   db,
+//   User,
+//   Restaurant,
+//   Query,
+//   CheckIn,
+//   Review,
+//   Click
+// };
