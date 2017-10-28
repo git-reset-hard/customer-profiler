@@ -9,7 +9,7 @@ db.once('open', () => {
   console.log('opened connection with db');
 
   const userSchema = mongoose.Schema({
-    _id: Number,
+    numId: Number,
     name: String,
     gets_recommendations: Boolean,
     distances_traveled: Array,
@@ -27,7 +27,7 @@ db.once('open', () => {
   });
 
   const restaurantSchema = mongoose.Schema({
-    _id: Number,
+    numId: Number,
     latitude: Number,
     longitude: Number,
     priceRange: Number,
@@ -36,32 +36,30 @@ db.once('open', () => {
   });
 
   const querySchema = mongoose.Schema({
-    _id: Number,
+    numId: Number,
     search_term: String,
     location: Number,
     list_id: Number
   });
 
   const checkInSchema = mongoose.Schema({
-    _id: Number,
+    numId: Number,
     restaurant_id: Number,
     user_id: Number,
-    distance: Number,
     time: Number
   });
 
   const reviewSchema = mongoose.Schema({
-    _id: Number,
+    numId: Number,
     restaurant_id: Number,
     user_id: Number,
     star_rating: Number,
-    distance: Number,
     time: Date,
     body: String
   });
 
   const clickSchema = mongoose.Schema({
-    _id: Number,
+    numId: Number,
     restaurant_id: Number,
     user_id: Number,
     query_id: Number,
@@ -69,29 +67,29 @@ db.once('open', () => {
   });
 
 
-  userSchema.plugin(autoIncrement.plugin, 'User');
+  userSchema.plugin(autoIncrement.plugin, { model: 'User', field: 'numId' });
   const User = mongoose.model('User', userSchema);
 
-  querySchema.plugin(autoIncrement.plugin, 'Query');
+  querySchema.plugin(autoIncrement.plugin, { model: 'Query', field: 'numId' });
   const Query = mongoose.model('Query', querySchema);
 
-  checkInSchema.plugin(autoIncrement.plugin, 'CheckIn');
+  checkInSchema.plugin(autoIncrement.plugin, { model: 'CheckIn', field: 'numId' });
   const CheckIn = mongoose.model('CheckIn', checkInSchema);
 
-  reviewSchema.plugin(autoIncrement.plugin, 'Review');
+  reviewSchema.plugin(autoIncrement.plugin, { model: 'Review', field: 'numId' });
   const Review = mongoose.model('Review', reviewSchema);
 
-  clickSchema.plugin(autoIncrement.plugin, 'Click');
+  clickSchema.plugin(autoIncrement.plugin, { model: 'Click', field: 'numId' });
   const Click = mongoose.model('Click', clickSchema);
 
-  let parameters = {
-    name: 'hi'
-  };
+  // let parameters = {
+  //   name: 'hi'
+  // };
 
-  let entry = new User(parameters);
-  entry.save((err, result) => {
-    console.log('saved entry, ', result);
-  });
+  // let entry = new User(parameters);
+  // entry.save((err, result) => {
+  //   console.log('saved entry, ', result);
+  // });
 });
 
 // module.exports = {
