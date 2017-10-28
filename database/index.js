@@ -16,22 +16,22 @@ sequelize
     console.log('Connection has been established successfully.');
   })
   .then(() => {
-    return User.sync({force: false});
+    return User.sync({force: true});
   })
   .then(() => {
-    return Restaurant.sync({force: false});
+    return Restaurant.sync({force: true});
   })
   .then(() => {
-    return Query.sync({force: false});
+    return Query.sync({force: true});
   })
   .then(() => {
-    return Check_In.sync({force: false});
+    return Check_In.sync({force: true});
   })
   .then(() => {
-    return Review.sync({force: false});
+    return Review.sync({force: true});
   })
   .then(() => {
-    return Click.sync({force: false});
+    return Click.sync({force: true});
   })
   .catch(err => {
     console.error('Unable to connect to the database:', err);

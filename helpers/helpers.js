@@ -5,19 +5,9 @@ const randomDate = require('random-date-generator');
 const randomZipCode = require('random-zipcode');
 const randomText = require('txtgen');
 faker.locale = 'en_US';
-// const shortId = require('shortid');
-
-// Note: async, does not work as-is
 
 const restaurantCount = 50000;
 const userCount = 40000;
-
-const pickRandomRestaurant = function() {
-  db.Restaurant.count()
-    .then((num) => {
-      return randomizeRangeInclusive(0, num);
-    });
-};
 
 const makeRandomClicks = function(userId, n, maxRestaurantId, maxQueries) {
   let clicks = [];
@@ -40,7 +30,6 @@ const makeRandomCheckIns = function(userId, n, maxRestaurantId) {
 
   for (var i = 1; i <= n; i++) {
     checkIns.push({
-      // id: shortId.generate(),
       userId: userId,
       restaurantId: randomizeRangeInclusive(1, maxRestaurantId),
       time: makeRandomDateTime()
@@ -55,7 +44,6 @@ const makeRandomReviews = function(userId, n, maxRestaurantId) {
 
   for (var i = 1; i <= n; i++) {
     reviews.push({
-      // id: shortId.generate(),
       userId: userId,
       restaurantId: randomizeRangeInclusive(1, maxRestaurantId),
       star_rating: randomizeRangeInclusive(1, 5),
@@ -106,7 +94,6 @@ const makeRandomRestaurants = function(n) {
 
   for (var i = 0; i < n; i++) {
     restaurants.push({
-      // id: shortId.generate(),
       latitude: randomLatitude(),
       longitude: randomLongitude(),
       priceRange: randomizeRangeInclusive(1, 4),
@@ -125,7 +112,6 @@ const makeRandomDateTime = function() {
 
   return randomDate.getRandomDateInRange(startDate, endDate);
 };
-
 
 const makeRandomQueries = function(n) {
   let queries = [];
@@ -171,7 +157,7 @@ const makeRandomUser = function() {
     distance_importance: Math.random(),
     price_importance: Math.random(),
     restaurant_variance: Math.random(),
-    personality: { //JSON
+    personality: {
       personality: Array.from({length: 5}, () => Math.random()),
       traits: Array.from({length: 12}, () => Math.round(Math.random())),
       needs: Array.from({length: 12}, () => Math.random()),

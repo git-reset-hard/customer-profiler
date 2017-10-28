@@ -1,3 +1,6 @@
+// Currently refactoring and splitting into files,
+// file will be removed once refactor complete.
+
 const config = require('../config/config.js');
 const Sequelize = require('sequelize');
 const helpers = require('../helpers/helpers.js');
