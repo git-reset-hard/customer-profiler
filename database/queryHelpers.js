@@ -58,6 +58,21 @@ const addClick = function(click) {
     .catch((err) => console.log('Error adding click to DB ', err));
 };
 
+// add checkin to db
+// look up rest. (save obj)
+// look up user (save and manipulate obj)
+// calc dist between user and address
+// push distance into user distances_traveled
+// push stars into ratings
+// push price into prices
+// recalculate prefs(stars, price, distance, openness)
+// save to db
+const addCheckIn = function(checkIn) {
+  return db.CheckIn.create(checkIn)
+    .then((result) => console.log('Added check-in to DB ', result))
+    .catch((err) => console.log('Error adding check-in to DB ', err));
+};
+
 const getCurrentUserId = function() {
   return db.User.count({});
 };
