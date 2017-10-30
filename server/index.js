@@ -1,5 +1,5 @@
 const express = require('express');
-const db = require('../database/index.js');
+const query = require('../database/queryHelpers.js');
 const app = express();
 const bodyParser = require('body-parser');
 const port = 8080;
@@ -13,7 +13,7 @@ app.listen(port, () => {
 app.use(bodyParser.json());
 
 app.post('/clicks', function (req, res) {
-  db.addClick(req.body)
+  query.addClick(req.body)
     .then(() => res.status(200).send('Click POSTed'))
     .catch((err) => console.log('Error on click POST'));
 });
@@ -25,5 +25,3 @@ app.post('/checkins', function (req, res) {
 app.post('/reviews', function (req, res) {
   res.status(200).send('Review POSTed');
 });
-
-console.log(db);
