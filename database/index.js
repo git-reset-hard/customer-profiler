@@ -72,23 +72,15 @@ const clickSchema = mongoose.Schema({
 userSchema.plugin(autoIncrement.plugin, { model: 'User', field: 'numId' });
 const User = mongoose.model('User', userSchema);
 
-querySchema.plugin(autoIncrement.plugin, { model: 'Query', field: 'numId' });
 const Query = mongoose.model('Query', querySchema);
 
-checkInSchema.plugin(autoIncrement.plugin, { model: 'CheckIn', field: 'numId' });
 const CheckIn = mongoose.model('CheckIn', checkInSchema);
 
-reviewSchema.plugin(autoIncrement.plugin, { model: 'Review', field: 'numId' });
 const Review = mongoose.model('Review', reviewSchema);
 
 restaurantSchema.plugin(autoIncrement.plugin, { model: 'Restaurant', field: 'numId' });
 const Restaurant = mongoose.model('Restaurant', restaurantSchema);
 
-clickSchema.plugin(autoIncrement.plugin, { 
-  model: 'Click', 
-  field: 'numId',
-  startAt: 10000001
-});
 const Click = mongoose.model('Click', clickSchema);
 
 module.exports = {
