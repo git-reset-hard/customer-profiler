@@ -9,6 +9,13 @@ const makeRandomClick = function(maxUserId, maxRestaurantId) {
   };
 };
 
+const makeRandomCheckIn = function(maxUserId, maxRestaurantId) {
+  return {
+    user_id: helpers.randomizeRangeInclusive(0, maxUserId),
+    restaurant_id: helpers.randomizeRangeInclusive(0, maxRestaurantId),
+  };
+};
+
 // console.log(makeRandomClick(40000, 50000));
 setInterval(() => {
   query.addClick(makeRandomClick(40000, 50000));

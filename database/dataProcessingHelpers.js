@@ -1,11 +1,16 @@
-const formatProfileForAnalytics = {
+const formatProfileForAnalytics = function() {
 
 };
 
-const formatProfileForRecEngine = {
+const formatProfileForRecEngine = function() {
 
 };
 
-const addUserFromRestProfiler = {
+const addUserFromRestProfiler = function() {
+
+};
+
+const calcDistance = function(userZipCode, restaurantAddress) {
+
 
 };
