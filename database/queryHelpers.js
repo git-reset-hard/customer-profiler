@@ -58,9 +58,19 @@ const addClick = function(click) {
     .catch((err) => console.log('Error adding click to DB ', err));
 };
 
+const getCurrentUserId = function() {
+  return db.User.count({});
+};
+
+const getCurrentRestaurantId = function() {
+  return db.Restaurant.count({});
+};
+
 // addUserTravelDistance(5, 10)
 //   .then((res) => console.log('done', res));
 
 module.exports = {
-  addClick
+  addClick,
+  getCurrentUserId,
+  getCurrentRestaurantId
 };
