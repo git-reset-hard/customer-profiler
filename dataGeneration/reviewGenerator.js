@@ -5,7 +5,7 @@ const writeReviews = function() {
   const writeStream = fs.createWriteStream('./data/seedReviews.json', {flags: 'a'});
 
   writeStream.write('[');
-  for (var i = 0; i < 400000; i++) {
+  for (var i = 0; i < 50000; i++) {
     if (i) {
       writeStream.write(',');
     }
