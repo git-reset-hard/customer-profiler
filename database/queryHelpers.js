@@ -1,65 +1,37 @@
-// NOT IN USE; DO NOT REVIEW
-// TODO: Replace with Mongoose queries (currently Sequelize)
-
 const db = require('./index.js');
-// const gen = require('../dataGeneration/generateData.js');
 
-// const getUserPreferences = function(userId) {
-//   let prefs = {};
+const getUserProfile = function(userId) {
+  return db.User.find({
+    numId: userId
+  });
+};
 
-//   return db.User.findOne({
-//     where: {
-//       id: userId
-//     }
-//   })
-//     .then((result) => {
-//       prefs = {
-//         star_importance: result.dataValues.star_importance,
-//         proximity_importance: result.dataValues.proximity_importance,
-//         price_importance: result.dataValues.price_importance,
-//         restaurant_variance: result.dataValues.restaurant_variance
-//       };
+const updateUserPrefs = function(userId, star, distance, price, openness) {
+  return db.User.update({
+    numId: userId
+  }, {
+    $set: {
+      star_pref: star,
+      distance_pref: distance,
+      price_pref: price,
+      openness: openness
+    }
+  });
+};
 
-//       console.log(prefs);
-//     });
-// };
+const updateSingleUserProperty = function(userId, property, value) {
+  let options = {};
+  options[property] = value;
+  console.log(options);
 
-// getUserPreferences sample output:
-// { star_importance: .5,
-//   proximity_importance: .9,
-//   price_importance: .2,
-//   restaurant_variance: .5 }
+  return db.User.update({
+    numId: userId
+  }, {
+    $set: options
+  })
+    .then((result) => console.log('Updated: ', result));
+};
 
-// db.sequelize.authenticate()
-//   .then(() => {
-//     console.log('creating user');
-//     db.User.bulkCreate(gen.makeUserBatch(2));
-//   })
-//   .then(() => {
-//     getUserPreferences(1);
-//   });
-
-
-// get user
-// pass in obj with trait-value pairs
-// update row with values
-// const updateUserPreferences = function(userId, newPrefs) {
-//   db.User.update({
-//     where: {
-//       id: userId
-//     }
-//   })
-//   .then
-// };
-
-
-
-// retrieve restaurants that a user likes
-// will be sent to rec. engine
-
-// returns promise
-// find all reviews by user
-// filter by star ratings of 4 or 5
 const getLikedRestaurants = function(userId) {
   return db.Review.find({
     user_id: userId,
@@ -67,33 +39,24 @@ const getLikedRestaurants = function(userId) {
   });
 };
 
-console.log(db.db);
-console.log(db);
+const addUserTravelDistance = function(userId, distance) {
+  return getUserProfile(userId)
+    .then((result) => {
+      let distances = (result[0].distances_traveled);
+      distances.push(distance);
+      console.log(distances);
+      return updateSingleUserProperty(userId, 'distances_traveled', distances);
+    })
+    .then(() => {
+      console.log('done');
+    });
+};
 
-getLikedRestaurants(5)
-  .then((result) => console.log(result));
+const addClick = function(click) {
+  db.Click.create(click)
+    .then((result) => console.log('Added click to DB ', result))
+    .catch((err) => console.log('Error adding click to DB ', err));
+};
 
-// makes user object to send to rec engine
-// const getUserInfo = function(userId) {
-//   let likedRestaurants, userInfo;
-
-//   return db.User.findOne({
-//     where: {
-//       id: userId
-//     }
-//   })
-//     .then((result) => {
-//       userInfo = result;
-//       getLikedRestaurants(userId);
-//     })
-//     .then((result) => {
-//       likedRestaurants = result;
-//     });
-
-//   // call formatting helper function
-//   // format and return all info
-// };
-
-// const formatUserInfo = function(userRow, likedRestaurants) {
-
-// }
+addUserTravelDistance(5, 10)
+  .then((res) => console.log('done', res));
