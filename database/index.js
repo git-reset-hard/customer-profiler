@@ -37,21 +37,18 @@ const restaurantSchema = mongoose.Schema({
 });
 
 const querySchema = mongoose.Schema({
-  numId: Number,
   search_term: String,
   location: Number,
   list_id: Number
 });
 
 const checkInSchema = mongoose.Schema({
-  numId: Number,
   restaurant_id: Number,
   user_id: Number,
   time: { type: Date, default: Date.now }
 });
 
 const reviewSchema = mongoose.Schema({
-  numId: Number,
   restaurant_id: Number,
   user_id: Number,
   star_rating: Number,
@@ -60,7 +57,6 @@ const reviewSchema = mongoose.Schema({
 });
 
 const clickSchema = mongoose.Schema({
-  numId: Number,
   restaurant_id: Number,
   user_id: Number,
   query_id: Number,

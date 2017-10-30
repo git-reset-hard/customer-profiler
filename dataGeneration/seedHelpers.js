@@ -119,6 +119,7 @@ const createClick = function (id) {
 
 
 module.exports = {
+  randomizeRangeInclusive,
   createUser,
   createRestaurant,
   createQuery,
