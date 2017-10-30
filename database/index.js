@@ -1,3 +1,5 @@
+// Connect to DB and create schema
+
 const mongoose = require('mongoose');
 autoIncrement = require('mongoose-auto-increment');
 
@@ -89,19 +91,8 @@ clickSchema.plugin(autoIncrement.plugin, {
 });
 const Click = mongoose.model('Click', clickSchema);
 
-
-// let parameters = {
-//   name: 'hi'
-// };
-
-// let entry = new User(parameters);
-// entry.save((err, result) => {
-//   console.log('saved entry, ', result);
-// });
-
 module.exports = {
   db,
-  // addClick,
   User,
   Restaurant,
   Query,
