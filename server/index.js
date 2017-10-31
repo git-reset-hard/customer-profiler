@@ -15,6 +15,8 @@ app.listen(port, () => {
   console.log('Server listening on port ', port);
 });
 
+app.use(bodyParser.json());
+
 query.getCurrentUserId()
   .then((result) => { nextUserId = result + 1; })
   .catch((err) => console.log('Error getting next user ID'));
@@ -23,10 +25,11 @@ query.getCurrentRestaurantId()
   .then((result) => { nextRestaurantId = result + 1; })
   .catch((err) => console.log('Error getting next user ID'));
 
-app.use(bodyParser.json());
-
 app.post('/clicks', function (req, res) {
-  appendFile('./elasticsearch/logs.json', `{"user_id":${req.body.user_id},"restaurant_id":${req.body.restaurant_id},"query_id":${req.body.query_id},"time":${Date.now().toString()},"type":"click","stage":"start"}`)
+  console.log('GOT TO ENDPT');
+  console.log('req body, ', req.body);
+  let click = req.body;
+  appendFile('./elasticsearch/logs.json', `{"user_id":${click.user_id},"restaurant_id":${click.restaurant_id},"query_id":${click.query_id},"time":${Date.now().toString()},"type":"click","stage":"start"}`)
     .catch((err) => console.log('error writing log to file ', err));
 
   query.addClick(req.body)
