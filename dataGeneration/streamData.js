@@ -3,7 +3,8 @@ const query = require('../database/queryHelpers.js');
 const config = require('../config/config.js');
 const request = require('request');
 
-const sendTo = function(endpoint, object) {
+const sendTo = function(endpoint, generator, range ) {
+  let object = generator.apply(this, range)
   console.log('SENDING REQ');
   console.log(JSON.stringify(object));
   request.post({
@@ -12,6 +13,7 @@ const sendTo = function(endpoint, object) {
     body: object
   }, (err, res, body) => {
     console.log('ERROR HERE: ', err);
+    setTimeout(() => sendTo(endpoint, generator, range), 1300);
   });
 };
 
@@ -31,7 +33,6 @@ const makeRandomCheckIn = function(maxUserId, maxRestaurantId) {
 };
 
 // console.log(makeRandomClick(40000, 50000));
-// setInterval(() => {
-//   sendTo('clicks', makeRandomClick(40000, 50000));
-// }, 1000);
-sendTo('clicks', makeRandomClick(40000, 50000));
+
+sendTo('clicks', makeRandomClick, [40000, 50000]);
+// sendTo('clicks', makeRandomClick(40000, 50000));

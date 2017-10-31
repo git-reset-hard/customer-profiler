@@ -10,7 +10,7 @@ read(__dirname + '/logs.json')
   .then((data) => {
     logs = data.toString().split('\n');
 
-    logs.forEach((element) => {
+    logs.forEach((element, index) => {
       parsed = JSON.parse(element);
       logsToSend.push({ index: {_index: 'profiler', _type: parsed.type } });
       logsToSend.push(element);
