@@ -11,10 +11,14 @@ read(__dirname + '/logs.json')
     logs = data.toString().split('\n');
 
     logs.forEach((element, index) => {
-      parsed = JSON.parse(element);
-      logsToSend.push({ index: {_index: 'profiler', _type: parsed.type } });
-      logsToSend.push(element);
+      if (element) {
+        parsed = JSON.parse(element);
+        logsToSend.push({ index: {_index: 'profiler', _type: parsed.type } });
+        logsToSend.push(element);
+      }
     });
+
+    console.log(logsToSend);
     
     return client.bulk({
       body: logsToSend
