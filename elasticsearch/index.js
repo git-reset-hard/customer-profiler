@@ -1,6 +1,6 @@
 var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
-  host: 'localhost:9200',
+  host: 'https://search-profiler-ymu4wgxj7g2gs36easyccwukau.us-east-2.es.amazonaws.com',
   log: 'trace'
 });
 
@@ -13,3 +13,7 @@ client.ping({
     console.log('All is well');
   }
 });
+
+module.exports = {
+  client
+};
