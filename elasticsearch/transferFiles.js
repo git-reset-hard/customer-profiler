@@ -2,11 +2,14 @@ const fs = require('fs');
 const Promise = require('bluebird');
 let logs, parsed;
 let logsToSend = [];
-var client = require('./index.js').client;
+const client = require('./index.js').client;
+const filePath = __dirname + '/logs.json';
+
 
 const read = Promise.promisify(fs.readFile);
+const write = Promise.promisify(fs.writeFile);
 
-read(__dirname + '/logs.json')
+read(filePath)
   .then((data) => {
     logs = data.toString().split('\n');
 
@@ -25,4 +28,5 @@ read(__dirname + '/logs.json')
     });
   })
   .then(() => console.log('Sent logs to elasticsearch'))
+  .then(() => write(filePath, ''))
   .catch((err) => console.log('Error sending logs to elasticsearch', err));
