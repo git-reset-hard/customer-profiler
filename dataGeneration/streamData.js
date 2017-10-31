@@ -4,7 +4,7 @@ const config = require('../config/config.js');
 const request = require('request');
 
 const sendTo = function(endpoint, generator, range ) {
-  let object = generator.apply(this, range)
+  let object = generator.apply(this, range);
   console.log('SENDING REQ');
   console.log(JSON.stringify(object));
   request.post({
