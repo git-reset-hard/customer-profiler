@@ -54,7 +54,7 @@ const addUserTravelDistance = function(userId, distance) {
 };
 
 const addClick = function(click) {
-  db.Click.create(click)
+  return db.Click.create(click)
     .then((result) => console.log('Added click to DB ', result))
     .catch((err) => { console.log('Error adding click to DB ', err); });
 };

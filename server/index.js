@@ -26,8 +26,10 @@ query.getCurrentRestaurantId()
 app.use(bodyParser.json());
 
 app.post('/clicks', function (req, res) {
+  appendFile('./elasticsearch/logs.json', `{"user_id":${req.body.user_id},"restaurant_id":${req.body.restaurant_id},"query_id":${req.body.query_id},"time":${Date.now().toString()},"type":"click","stage":"start"}`)
+    .catch((err) => console.log('error writing log to file ', err));
 
-  query.addClick(click)
+  query.addClick(req.body)
     .then(() => res.status(200).send('Click POSTed'))
     .catch((err) => console.log('Error on click POST'));
 });

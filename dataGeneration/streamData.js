@@ -1,5 +1,11 @@
 const helpers = require('./seedHelpers.js');
 const query = require('../database/queryHelpers.js');
+const config = require('../config/config.js');
+const http = require('http');
+
+const sendTo = function(endpoint, object) {
+
+};
 
 const makeRandomClick = function(maxUserId, maxRestaurantId) {
   return {
