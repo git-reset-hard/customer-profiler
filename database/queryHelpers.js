@@ -50,8 +50,6 @@ const updateUserProperties = function(userId, properties) {
     .then((result) => console.log('Updated: ', result));
 };
 
-// const updateUserProperties
-
 const getLikedRestaurants = function(userId) {
   return db.Review.find({
     user_id: userId,
@@ -78,15 +76,7 @@ const addClick = function(click) {
     .catch((err) => { console.log('Error adding click to DB ', err); });
 };
 
-// add checkin to db
-// look up rest. (save obj)
-// look up user (save and manipulate obj)
-// calc dist between user and address
-// push distance into user distances_traveled
-// push stars into ratings
-// push price into prices
-// recalculate prefs(stars, price, distance)
-// save to db
+// also updates user prefs
 const addCheckIn = function(checkIn) {
   let restaurantProfile, userProfile; 
   let updatedUser = {};
@@ -97,7 +87,6 @@ const addCheckIn = function(checkIn) {
     })
     .then((restaurant) => {
       restaurantProfile = restaurant[0];
-      // console.log(restaurantProfile);
       return getUserProfile(checkIn.user_id);
     })
     .then((user) => {
@@ -119,31 +108,14 @@ const addCheckIn = function(checkIn) {
       updatedUser.star_pref = dataHelpers.calcNormalizedAvg(updatedUser.stars, 'star');
       updatedUser.price_pref = dataHelpers.calcNormalizedAvg(updatedUser.prices, 'price');
       updatedUser.distance_pref = dataHelpers.calcNormalizedAvg(updatedUser.distances_traveled, 'distance');
-  
-      // TODO: not complete!
 
-      console.log('stars ', updatedUser.stars);
-      console.log(updatedUser);
       updateUserProperties(userProfile.numId, updatedUser);
     })
     .then(() => {
-      console.log('done!!!');
+      console.log('Added check-in to DB; user prefs updated');
     })
     .catch((err) => console.log('Error adding check-in to DB ', err));
 };
-
-addCheckIn({
-  user_id: 22,
-  restaurant_id: 22,
-  time: new Date()
-});
-
-// updateUserProperties(12, {stars: [1, 1, 1]});
-
-// getRestaurantProfile(1)
-//   .then((restaurant) => {
-//     console.log(restaurant);
-//   });
 
 const getCurrentUserId = function() {
   return db.User.count({});
@@ -152,8 +124,6 @@ const getCurrentUserId = function() {
 const getCurrentRestaurantId = function() {
   return db.Restaurant.count({});
 };
-// addUserTravelDistance(5, 10)
-//   .then((res) => console.log('done', res));
 
 module.exports = {
   addClick,
