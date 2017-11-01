@@ -1,6 +1,8 @@
+const config = require('../config/config.js');
+
 var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
-  host: 'https://search-profiler-ymu4wgxj7g2gs36easyccwukau.us-east-2.es.amazonaws.com',
+  host: config.elasticsearchHost,
   log: 'trace'
 });
 
