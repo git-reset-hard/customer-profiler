@@ -26,8 +26,6 @@ query.getCurrentRestaurantId()
   .catch((err) => console.log('Error getting next user ID'));
 
 app.post('/clicks', function (req, res) {
-  console.log('GOT TO ENDPT');
-  console.log('req body, ', req.body);
   let click = req.body;
   appendFile('./elasticsearch/logs.json', `{"user_id":${click.user_id},"restaurant_id":${click.restaurant_id},"query_id":${click.query_id},"time":${Date.now().toString()},"type":"click","stage":"start"}\n`)
     .catch((err) => console.log('error writing log to file ', err));

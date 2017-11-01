@@ -5,14 +5,14 @@ const request = require('request');
 
 const sendTo = function(endpoint, generator, range ) {
   let object = generator.apply(this, range);
-  console.log('SENDING REQ');
-  console.log(JSON.stringify(object));
   request.post({
     url: config.host + `:${config.port}/${endpoint}`,
     json: true,
     body: object
   }, (err, res, body) => {
-    console.log('ERROR HERE: ', err);
+    if (err) {
+      console.log(err);
+    }
     setTimeout(() => sendTo(endpoint, generator, range), 1300);
   });
 };
