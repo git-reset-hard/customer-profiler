@@ -14,17 +14,23 @@ const userSchema = mongoose.Schema({
   name: String,
   gets_recommendations: Boolean,
   distances_traveled: Array,
+  stars: Number,
+  categories: Array,
+  reviews: String,
+  prices: Number,
   star_pref: Number,
   distance_pref: Number,
   price_pref: Number,
+  liked_restaurants: Array,
   openness: Number,
   hometown_latitude: Number,
   hometown_longitude: Number,
   hometown_city: String,
-  personality: Array,
-  traits: Array,
-  needs: Array,
-  values: Array
+  openness: Number,
+  conscientiousness: Number,
+  achievement: Number,
+  extraversion: Number,
+  agreeableness: Number
 });
 
 const restaurantSchema = mongoose.Schema({
