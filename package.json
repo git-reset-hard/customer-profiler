@@ -24,9 +24,11 @@
   },
   "dependencies": {
     "bluebird": "^3.5.1",
+    "city-to-coords": "^1.1.0",
     "elasticsearch": "^13.3.1",
     "express": "^4.16.2",
     "fs": "0.0.1-security",
+    "geolib": "^2.0.24",
     "mongoose": "^4.12.4",
     "mongoose-auto-increment": "^5.0.1",
     "pg": "^7.3.0",

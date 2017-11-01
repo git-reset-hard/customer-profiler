@@ -1,4 +1,6 @@
 const zipcodes = require('zipcodes');
+const geolib = require('geolib');
+const cityToCoords = require('city-to-coords');
 
 const formatProfileForAnalytics = function() {
 
@@ -12,20 +14,28 @@ const addUserFromRestProfiler = function() {
 
 };
 
+// convert city to coords with city-to-coords
+// get distance between coords with geolib
+
 // returns distance in miles
-const calcDistance = function(userZipCode, restaurantZipCode) {
-  return zipcodes.distance(userZipCode, restaurantZipCode);
+const formatCoordsToObj = function(lat, lon) {
+  return {
+    lat: lat,
+    lng: lon
+  };
 };
 
-// input is 'city, state(abbreviation)'
-const cityToZipCode = function(city) {
-  let parsed = city.split(',');
-  parsed[1] = parsed[1].slice(1);
-  return zipcodes.lookupByName(parsed[0], parsed[1]);
+const calcDistance = function(userCoords, restaurantCoords) {
+  return geolib.getDistanceSimple(userCoords, restaurantCoords);
+};
+
+// async!
+const convertCityToCoords = function(city) {
+  return cityToCoords(city);
 };
 
 module.exports = {
-  calcDistance
+  calcDistance,
+  formatCoordsToObj,
+  
 };
-
-console.log(cityToZipCode('San Jose, CA'));
