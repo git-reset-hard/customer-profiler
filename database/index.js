@@ -35,10 +35,11 @@ const userSchema = mongoose.Schema({
 
 const restaurantSchema = mongoose.Schema({
   numId: Number,
-  latitude: Number,
-  longitude: Number,
+  // latitude: Number,
+  // longitude: Number,
   priceRange: Number,
   rating: Number,
+  zip: Number,
   categories: Array
 });
 

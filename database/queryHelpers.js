@@ -1,9 +1,16 @@
 const db = require('./index.js');
 const es = require('../elasticsearch/index.js');
+const dataHelpers = require('./dataProcessingHelpers.js');
 
 const getUserProfile = function(userId) {
   return db.User.find({
     numId: userId
+  });
+};
+
+const getRestaurantProfile = function(restId) {
+  return db.Restaurant.find({
+    numId: restId
   });
 };
 
@@ -69,10 +76,30 @@ const addClick = function(click) {
 // recalculate prefs(stars, price, distance, openness)
 // save to db
 const addCheckIn = function(checkIn) {
+  var restaurantProfile, userProfile;
   return db.CheckIn.create(checkIn)
-    .then((result) => console.log('Added check-in to DB ', result))
+    .then((result) => {
+      console.log('Added check-in to DB ', result);
+      return getRestaurantProfile(checkIn.restaurant_id);
+    })
+    .then((restaurant) => {
+      restaurantProfile = restaurant[0];
+      return getUserProfile(checkIn.user_id);
+    })
+    .then((user) => {
+      userProfile = user[0];
+      user.stars.push(restaurantProfile.rating);
+      user.prices.push(restaurantProfile.priceRange);
+      user.distances.push(dataHelpers.getDistance()) // TODO: not complete!
+      ;
+    })
     .catch((err) => console.log('Error adding check-in to DB ', err));
 };
+
+// getRestaurantProfile(1)
+//   .then((restaurant) => {
+//     console.log(restaurant);
+//   });
 
 const getCurrentUserId = function() {
   return db.User.count({});
@@ -81,7 +108,6 @@ const getCurrentUserId = function() {
 const getCurrentRestaurantId = function() {
   return db.Restaurant.count({});
 };
-
 // addUserTravelDistance(5, 10)
 //   .then((res) => console.log('done', res));
 
