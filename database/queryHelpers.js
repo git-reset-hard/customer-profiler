@@ -40,6 +40,18 @@ const updateSingleUserProperty = function(userId, property, value) {
     .then((result) => console.log('Updated: ', result));
 };
 
+const updateUserProperties = function(userId, properties) {
+  console.log(`updating user ${userId} with properties ${JSON.stringify(properties)}`);
+  return db.User.update({
+    numId: userId
+  }, {
+    $set: properties
+  })
+    .then((result) => console.log('Updated: ', result));
+};
+
+// const updateUserProperties
+
 const getLikedRestaurants = function(userId) {
   return db.Review.find({
     user_id: userId,
@@ -73,10 +85,11 @@ const addClick = function(click) {
 // push distance into user distances_traveled
 // push stars into ratings
 // push price into prices
-// recalculate prefs(stars, price, distance, openness)
+// recalculate prefs(stars, price, distance)
 // save to db
 const addCheckIn = function(checkIn) {
-  var restaurantProfile, userProfile;
+  let restaurantProfile, userProfile; 
+  let updatedUser = {};
   return db.CheckIn.create(checkIn)
     .then((result) => {
       console.log('Added check-in to DB ', result);
@@ -84,17 +97,48 @@ const addCheckIn = function(checkIn) {
     })
     .then((restaurant) => {
       restaurantProfile = restaurant[0];
+      // console.log(restaurantProfile);
       return getUserProfile(checkIn.user_id);
     })
     .then((user) => {
       userProfile = user[0];
-      user.stars.push(restaurantProfile.rating);
-      user.prices.push(restaurantProfile.priceRange);
-      user.distances.push(dataHelpers.getDistance()) // TODO: not complete!
-      ;
+      console.log(userProfile);
+      console.log(restaurantProfile);
+
+      updatedUser = {
+        stars: userProfile.stars.concat(restaurantProfile.rating),
+        prices: userProfile.prices.concat(restaurantProfile.priceRange),
+        distances_traveled: userProfile.distances_traveled.concat(
+          dataHelpers.calcDistance(
+            dataHelpers.formatCoordsToObj(userProfile.latitude, userProfile.longitude),
+            dataHelpers.formatCoordsToObj(restaurantProfile.latitude, restaurantProfile.longitude)
+          )
+        )
+      };
+      
+      updatedUser.star_pref = dataHelpers.calcNormalizedAvg(updatedUser.stars, 'star');
+      updatedUser.price_pref = dataHelpers.calcNormalizedAvg(updatedUser.prices, 'price');
+      updatedUser.distance_pref = dataHelpers.calcNormalizedAvg(updatedUser.distances_traveled, 'distance');
+  
+      // TODO: not complete!
+
+      console.log('stars ', updatedUser.stars);
+      console.log(updatedUser);
+      updateUserProperties(userProfile.numId, updatedUser);
+    })
+    .then(() => {
+      console.log('done!!!');
     })
     .catch((err) => console.log('Error adding check-in to DB ', err));
 };
+
+addCheckIn({
+  user_id: 22,
+  restaurant_id: 22,
+  time: new Date()
+});
+
+// updateUserProperties(12, {stars: [1, 1, 1]});
 
 // getRestaurantProfile(1)
 //   .then((restaurant) => {

@@ -56,6 +56,10 @@ const createUser = function (id) {
     star_pref: Math.random(),
     distance_pref: Math.random(),
     price_pref: Math.random(),
+    stars: Array.from({length: 3}, () => randomizeRangeInclusive(1, 5)),
+    reviews: randomText.paragraph(),
+    prices: Array.from({length: 3}, () => randomizeRangeInclusive(1, 4)),
+    liked_restaurants: Array.from({length: 3}, () => randomizeRangeInclusive(1, maxRestNum)),
     latitude: randomLatitude(),
     longitude: randomLongitude(),
     hometown_city: faker.address.city(),
@@ -63,9 +67,10 @@ const createUser = function (id) {
     conscientiousness: Math.random(),
     achievement: Math.random(),
     extraversion: Math.random(),
-    agreeableness: Math.random(),
+    agreeableness: Math.random()
   };
 };
+// console.log(createUser(7));
 
 const createRestaurant = function (id) {
   return {
