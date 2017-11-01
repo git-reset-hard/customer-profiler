@@ -23,6 +23,7 @@
     "mocha": "^4.0.1"
   },
   "dependencies": {
+    "bluebird": "^3.5.1",
     "elasticsearch": "^13.3.1",
     "express": "^4.16.2",
     "fs": "0.0.1-security",
@@ -33,6 +34,7 @@
     "random-latitude": "^1.0.1",
     "random-longitude": "^1.0.1",
     "random-zipcode": "^1.0.2",
+    "request": "^2.83.0",
     "txtgen": "^2.0.1",
     "zipcodes": "^5.1.0"
   }

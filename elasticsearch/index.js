@@ -1,6 +1,8 @@
+const config = require('../config/config.js');
+
 var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
-  host: 'localhost:9200',
+  host: config.elasticsearchHost,
   log: 'trace'
 });
 
@@ -13,3 +15,7 @@ client.ping({
     console.log('All is well');
   }
 });
+
+module.exports = {
+  client
+};

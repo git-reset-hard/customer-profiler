@@ -5,6 +5,7 @@ config/staging.json
 config/test.json
 config/config.js
 data/
+elasticsearch/logs.json
 
 # OS X
 .DS_Store

@@ -1,5 +1,21 @@
 const helpers = require('./seedHelpers.js');
 const query = require('../database/queryHelpers.js');
+const config = require('../config/config.js');
+const request = require('request');
+
+const sendTo = function(endpoint, generator, range ) {
+  let object = generator.apply(this, range);
+  request.post({
+    url: config.host + `:${config.port}/${endpoint}`,
+    json: true,
+    body: object
+  }, (err, res, body) => {
+    if (err) {
+      console.log(err);
+    }
+    setTimeout(() => sendTo(endpoint, generator, range), 1300);
+  });
+};
 
 const makeRandomClick = function(maxUserId, maxRestaurantId) {
   return {
@@ -17,6 +33,6 @@ const makeRandomCheckIn = function(maxUserId, maxRestaurantId) {
 };
 
 // console.log(makeRandomClick(40000, 50000));
-setInterval(() => {
-  query.addClick(makeRandomClick(40000, 50000));
-}, 1000);
+
+sendTo('clicks', makeRandomClick, [40000, 50000]);
+// sendTo('clicks', makeRandomClick(40000, 50000));

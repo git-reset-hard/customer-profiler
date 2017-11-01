@@ -1,4 +1,5 @@
 const db = require('./index.js');
+const es = require('../elasticsearch/index.js');
 
 const getUserProfile = function(userId) {
   return db.User.find({
@@ -53,9 +54,9 @@ const addUserTravelDistance = function(userId, distance) {
 };
 
 const addClick = function(click) {
-  db.Click.create(click)
+  return db.Click.create(click)
     .then((result) => console.log('Added click to DB ', result))
-    .catch((err) => console.log('Error adding click to DB ', err));
+    .catch((err) => { console.log('Error adding click to DB ', err); });
 };
 
 // add checkin to db
