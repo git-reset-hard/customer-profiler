@@ -1,5 +1,3 @@
-let nextRestaurantId, nextUserId;
-
 const express = require('express');
 const query = require('../database/queryHelpers.js');
 const db = require('../database/index.js');
@@ -15,15 +13,6 @@ app.listen(port, () => {
 });
 
 app.use(bodyParser.json());
-
-// doesn't resolve before receiving req:
-query.getCurrentUserId()
-  .then((result) => { nextUserId = result + 1; })
-  .catch((err) => console.log('Error getting next user ID'));
-
-query.getCurrentRestaurantId()
-  .then((result) => { nextRestaurantId = result + 1; })
-  .catch((err) => console.log('Error getting next user ID'));
 
 app.post('/clicks', function (req, res) {
   let click = req.body;
