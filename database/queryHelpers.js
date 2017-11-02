@@ -109,13 +109,66 @@ const addCheckIn = function(checkIn) {
       updatedUser.price_pref = dataHelpers.calcNormalizedAvg(updatedUser.prices, 'price');
       updatedUser.distance_pref = dataHelpers.calcNormalizedAvg(updatedUser.distances_traveled, 'distance');
 
-      updateUserProperties(userProfile.numId, updatedUser);
+      return updateUserProperties(userProfile.numId, updatedUser);
     })
     .then(() => {
       console.log('Added check-in to DB; user prefs updated');
     })
     .catch((err) => console.log('Error adding check-in to DB ', err));
 };
+
+const addReview = function(review) {
+  let restaurantProfile, userProfile; 
+  let updatedUser = {};
+  return db.Review.create(review)
+    .then((result) => {
+      console.log('Added review to DB ', result);
+      return getRestaurantProfile(review.restaurant_id);
+    })
+    .then((restaurant) => {
+      restaurantProfile = restaurant[0];
+      return getUserProfile(review.user_id);
+    })
+    .then((user) => {
+      userProfile = user[0];
+      console.log(userProfile);
+      console.log(restaurantProfile);
+
+      updatedUser = {
+        stars: userProfile.stars.concat(restaurantProfile.rating),
+        prices: userProfile.prices.concat(restaurantProfile.priceRange),
+        distances_traveled: userProfile.distances_traveled.concat(
+          dataHelpers.calcDistance(
+            dataHelpers.formatCoordsToObj(userProfile.latitude, userProfile.longitude),
+            dataHelpers.formatCoordsToObj(restaurantProfile.latitude, restaurantProfile.longitude)
+          )
+        ),
+        reviews: userProfile.reviews + '\n' + review.body
+      };
+      
+      if (review.star_rating >= 4) {
+        updatedUser.liked_restaurants = userProfile.liked_restaurants.concat([restaurantProfile.numId]);
+      }
+
+      updatedUser.star_pref = dataHelpers.calcNormalizedAvg(updatedUser.stars, 'star');
+      updatedUser.price_pref = dataHelpers.calcNormalizedAvg(updatedUser.prices, 'price');
+      updatedUser.distance_pref = dataHelpers.calcNormalizedAvg(updatedUser.distances_traveled, 'distance');
+      // watson call here (before update)
+      return updateUserProperties(userProfile.numId, updatedUser);
+    })
+
+    .then(() => {
+      console.log('Added review to DB; user prefs updated');
+    })
+    .catch((err) => console.log('Error adding check-in to DB ', err));
+};
+
+// addReview({
+//   user_id: 59,
+//   restaurant_id: 60,
+//   star_rating: 3,
+//   body: 'this was a good restaurant'
+// });
 
 const getCurrentUserId = function() {
   return db.User.count({});
