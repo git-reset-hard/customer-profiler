@@ -1,8 +1,15 @@
 const config = require('../config/config.js');
 const expect = require('chai').expect;
-const db = require('../database/index.js');
+const db = require('./testingDatabase.js');
 
 describe('Server', function () {
+  it ('should return a 200 status on click POST', function(done) {
+
+  });
+
+
+
+
 
 });
 
@@ -24,3 +31,4 @@ describe('Database', function () {
     };
   });
 });
+

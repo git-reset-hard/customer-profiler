@@ -1,11 +1,9 @@
 // Connect to TEST DB and create schema
 
 const mongoose = require('mongoose');
-autoIncrement = require('mongoose-auto-increment');
 
 mongoose.connect('mongodb://localhost/testprofiler');
 const db = mongoose.connection;
-autoIncrement.initialize(db);
 
 db.once('open', () => console.log('opened connection with db'));
 
@@ -70,7 +68,6 @@ const clickSchema = mongoose.Schema({
 
 // SAVE AND AUTOINCREMENT MODELS
 
-userSchema.plugin(autoIncrement.plugin, { model: 'User', field: 'numId' });
 const User = mongoose.model('User', userSchema);
 
 const Query = mongoose.model('Query', querySchema);
@@ -79,7 +76,6 @@ const CheckIn = mongoose.model('CheckIn', checkInSchema);
 
 const Review = mongoose.model('Review', reviewSchema);
 
-restaurantSchema.plugin(autoIncrement.plugin, { model: 'Restaurant', field: 'numId' });
 const Restaurant = mongoose.model('Restaurant', restaurantSchema);
 
 const Click = mongoose.model('Click', clickSchema);
