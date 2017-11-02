@@ -36,14 +36,21 @@ app.post('/clicks', function (req, res) {
 });
 
 app.post('/checkins', function (req, res) {
-  query.addCheckIn()
+  let checkIn = req.body;
+  appendFile('./elasticsearch/logs.json', `{"user_id":${checkIn.user_id},"restaurant_id":${checkIn.restaurant_id},"time":${Date.now().toString()},"type":"check-in","stage":"start"}\n`)
+    .catch((err) => console.log('error writing log to file ', err));
+
+  query.addCheckIn(checkIn)
     .then(() => res.status(200).send('Check-in POSTed'))
     .catch((err) => console.log('Error on check-in POST'));
 });
 
 app.post('/reviews', function (req, res) {
+  let review = req.body;
+  appendFile('./elasticsearch/logs.json', `{"user_id":${review.user_id},"restaurant_id":${review.restaurant_id},"star_rating":${review.star_rating},"time":${Date.now().toString()},"type":"review","stage":"start"}\n`)
+    .catch((err) => console.log('error writing log to file ', err));
 
-  query.addReview()
+  query.addReview(review)
     .then(() => res.status(200).send('Review POSTed'))
     .catch((err) => console.log('Error on review POST'));
 });

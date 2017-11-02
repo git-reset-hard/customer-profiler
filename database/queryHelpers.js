@@ -181,5 +181,7 @@ const getCurrentRestaurantId = function() {
 module.exports = {
   addClick,
   getCurrentUserId,
-  getCurrentRestaurantId
+  getCurrentRestaurantId,
+  addReview,
+  addCheckIn
 };
