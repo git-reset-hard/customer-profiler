@@ -3,6 +3,7 @@ const query = require('../database/queryHelpers.js');
 const config = require('../config/config.js');
 const request = require('request');
 
+
 const sendTo = function(endpoint, generator, range ) {
   let object = generator.apply(this, range);
   request.post({
