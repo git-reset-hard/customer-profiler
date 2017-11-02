@@ -31,6 +31,7 @@
     "geolib": "^2.0.24",
     "mongoose": "^4.12.4",
     "mongoose-auto-increment": "^5.0.1",
+    "path": "^0.12.7",
     "pg": "^7.3.0",
     "random-date-generator": "^1.0.2",
     "random-latitude": "^1.0.1",

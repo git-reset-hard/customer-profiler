@@ -10,13 +10,13 @@ const Promise = require('bluebird');
 const appendFile = Promise.promisify(fs.appendFile);
 const port = 8080;
 
-
 app.listen(port, () => {
   console.log('Server listening on port ', port);
 });
 
 app.use(bodyParser.json());
 
+// doesn't resolve before receiving req:
 query.getCurrentUserId()
   .then((result) => { nextUserId = result + 1; })
   .catch((err) => console.log('Error getting next user ID'));

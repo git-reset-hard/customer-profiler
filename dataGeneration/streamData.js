@@ -2,9 +2,9 @@ const helpers = require('./seedHelpers.js');
 const query = require('../database/queryHelpers.js');
 const config = require('../config/config.js');
 const request = require('request');
+const randomText = require('txtgen');
 
-
-const sendTo = function(endpoint, generator, range ) {
+const sendTo = function(endpoint, generator, range, interval) {
   let object = generator.apply(this, range);
   request.post({
     url: config.host + `:${config.port}/${endpoint}`,
@@ -14,7 +14,7 @@ const sendTo = function(endpoint, generator, range ) {
     if (err) {
       console.log(err);
     }
-    setTimeout(() => sendTo(endpoint, generator, range), 1300);
+    setTimeout(() => sendTo(endpoint, generator, range, interval), interval);
   });
 };
 
@@ -33,7 +33,18 @@ const makeRandomCheckIn = function(maxUserId, maxRestaurantId) {
   };
 };
 
+const makeRandomReview = function (maxUserId, maxRestaurantId) {
+  return {
+    restaurant_id: helpers.randomizeRangeInclusive(0, maxRestaurantId),
+    user_id: helpers.randomizeRangeInclusive(0, maxUserId),
+    star_rating: helpers.randomizeRangeInclusive(1, 5),
+    body: randomText.paragraph()
+  };
+};
 // console.log(makeRandomClick(40000, 50000));
 
-sendTo('clicks', makeRandomClick, [40000, 50000]);
+// sendTo('clicks', makeRandomClick, [40000, 50000]);
+// sendTo('checkins', makeRandomCheckIn, [40000, 50000]);
+sendTo('reviews', makeRandomReview, [40000, 50000], 1500);
+
 // sendTo('clicks', makeRandomClick(40000, 50000));

@@ -54,6 +54,10 @@ calcDistancePref = function(data) {
   return ( avg ) / max;
 };
 
+initializeNewUser = function() {
+  
+}
+
 
 module.exports = {
   calcDistance,
