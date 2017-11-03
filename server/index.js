@@ -36,7 +36,9 @@ app.post('/clicks', function (req, res) {
   let click = req.body;
 
   if (!isValid('click', click)) {
-    return res.status(400).send('Invalid click');
+    console.log('not valid');
+    res.status(400).send('Invalid click');
+    return;
   }
 
   appendFile('./elasticsearch/logs.json', `{"user_id":${click.user_id},"restaurant_id":${click.restaurant_id},"query_id":${click.query_id},"time":${Date.now().toString()},"type":"click","stage":"start"}\n`)

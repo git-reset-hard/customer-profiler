@@ -1,4 +1,5 @@
 // Connect to TEST DB and create schema
+// This is an exact copy of real DB schema except for DB name
 
 const mongoose = require('mongoose');
 
@@ -65,8 +66,6 @@ const clickSchema = mongoose.Schema({
   query_id: Number,
   time: { type: Date, default: Date.now }
 });
-
-// SAVE AND AUTOINCREMENT MODELS
 
 const User = mongoose.model('User', userSchema);
 
