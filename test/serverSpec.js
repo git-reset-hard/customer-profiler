@@ -1,3 +1,6 @@
+// TODO: find out what is keeping process running
+// Note: server crashes when test aborted, double check if getting connection errors
+
 const config = require('../config/config.js');
 const expect = require('chai').expect;
 // const db = require('./testingDatabase.js');
@@ -43,8 +46,8 @@ const badReview = {
 
 // should log to file
 describe('Server', function () {
-  xit ('should return a 200 status on click POST', function() {
-    request.post({
+  it ('should return a 200 status on click POST', function() {
+    return request.post({
       url: config.host + `:${config.port}/clicks`,
       json: true,
       body: click,
@@ -56,8 +59,8 @@ describe('Server', function () {
   });
 
 
-  xit ('should return a 200 status on checkin POST', function() {
-    request.post({
+  it ('should return a 200 status on checkin POST', function() {
+    return request.post({
       url: config.host + `:${config.port}/checkins`,
       json: true,
       body: checkin,
@@ -68,8 +71,8 @@ describe('Server', function () {
       });
   });
 
-  xit ('should return a 200 status on review POST', function() {
-    request.post({
+  it ('should return a 200 status on review POST', function() {
+    return request.post({
       url: config.host + `:${config.port}/reviews`,
       json: true,
       body: review,
@@ -80,8 +83,8 @@ describe('Server', function () {
       });
   });
 
-  it ('should reject an invalid click', function(done) {
-    request.post({
+  it ('should reject an invalid click', function() {
+    return request.post({
       url: config.host + `:${config.port}/clicks`,
       json: true,
       body: badClick,
@@ -92,8 +95,7 @@ describe('Server', function () {
       })
       .catch((err) => {
         expect(err.statusCode).to.equal(400);
-      })
-      .then(done, done);
+      });
   });
 
   
@@ -102,9 +104,9 @@ describe('Server', function () {
 // test schema only
 // use raw mongoose queries here
 // should insert a click/review/checkin
-xdescribe('Database', function () {
+describe('Database', function () {
   it ('should insert a click into database', function() {
-    testDB.Review.create(click)
+    return testDB.Review.create(click)
       .then((result) => {
         expect(result.user_id).to.equal(1);
         expect(result.restaurant_id).to.equal(2);
