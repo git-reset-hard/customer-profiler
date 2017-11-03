@@ -1,12 +1,17 @@
 // TODO: find out what is keeping process running
 // Note: server crashes when test aborted, double check if getting connection errors
 
+// Mongoose cannot connect to two diff databases; cannot run all tests at once
+// To run Database tests: uncomment testDB, comment out query
+// To run Query Helpers tests: do opposite
+
 const config = require('../config/config.js');
-const expect = require('chai').expect;
-// const db = require('./testingDatabase.js');
+const expect = require('chai').expect;// const db = require('./testingDatabase.js');
+const query = require('../database/queryHelpers.js');
 const request = require('request-promise');
 const requestCallback = require('request'); // request-promise automatically rejected on HTTP error statuses
-const testDB = require('./testingDatabase.js');
+// const testDB = require('./testingDatabase.js');
+let deleteID;
 
 const click = {
   user_id: 1,
@@ -43,9 +48,8 @@ const badReview = {
   body: 'Best fried giraffe ever'
 };
 
-
 // should log to file
-describe('Server', function () {
+xdescribe('Server', function () {
   it ('should return a 200 status on click POST', function() {
     return request.post({
       url: config.host + `:${config.port}/clicks`,
@@ -131,8 +135,8 @@ describe('Server', function () {
   
 });
 
-describe('Database Schema', function () {
-  beforeEach((done) => {
+xdescribe('Database Schema', function () {
+  before((done) => {
     testDB.db.db.dropDatabase(done);
   });
 
@@ -159,6 +163,67 @@ describe('Database Schema', function () {
         expect(result.user_id).to.equal(6);
         expect(result.restaurant_id).to.equal(7);
         expect(result.star_rating).to.equal(5);
+      });
+  });
+});
+
+describe('Query Helpers', function () {
+  const testId = 9999999;
+
+  const user = {
+    numId: testId,
+    name: 'Fred X.',
+    gets_recommendations: true,
+    distances_traveled: [],
+    star_pref: null,
+    distance_pref: null,
+    price_pref: null,
+    stars: [],
+    reviews: '',
+    prices: [],
+    liked_restaurants: [],
+    latitude: 37.773972,
+    longitude: -122.431297,
+    hometown_city: 'San Francisco, CA',
+    openness: .9,
+    conscientiousness: .8,
+    achievement: .7,
+    extraversion: .6,
+    agreeableness: .1
+  };
+
+  const restaurant = {
+    numId: testId,
+    latitude: 37.773975,
+    longitude: -122.431295,
+    priceRange: 2,
+    rating: 4.5,
+    categories: ['Sushi']
+  };
+
+  after(() => {
+    query.User.remove({numId: testId})
+      .then(() => query.Restaurant.remove({numId: testId}));
+  });
+
+  it ('should retrieve a user from database', function() {
+    return query.User.create(user)
+      .then((result) => {
+        return query.getUserProfile(testId);
+      })
+      .then((result) => {
+        expect(result[0].name).to.equal('Fred X.');
+      });
+  });
+
+  it ('should retrieve a restaurant from database', function() {
+    return query.Restaurant.create(restaurant)
+      .then((result) => {
+        return query.getRestaurantProfile(testId);
+      })
+      .then((result) => {
+        expect(result[0].latitude).to.equal(37.773975);
+        expect(result[0].longitude).to.equal(-122.431295);
       });
   });
 });

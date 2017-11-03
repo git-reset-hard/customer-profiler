@@ -183,5 +183,9 @@ module.exports = {
   getCurrentUserId,
   getCurrentRestaurantId,
   addReview,
-  addCheckIn
+  addCheckIn,
+  User: db.User,
+  Restaurant: db.Restaurant,
+  getUserProfile,
+  getRestaurantProfile
 };
