@@ -126,20 +126,39 @@ describe('Server', function () {
       .catch((err) => {
         expect(err.statusCode).to.equal(400);
       });
-  });
+  }); 
 
   
 });
 
-// test schema only
-// use raw mongoose queries here
-// should insert a click/review/checkin
-describe('Database', function () {
+describe('Database Schema', function () {
+  beforeEach((done) => {
+    testDB.db.db.dropDatabase(done);
+  });
+
   it ('should insert a click into database', function() {
-    return testDB.Review.create(click)
+    return testDB.Click.create(click)
       .then((result) => {
         expect(result.user_id).to.equal(1);
         expect(result.restaurant_id).to.equal(2);
+        expect(result.query_id).to.equal(3);
+      });
+  });
+
+  it ('should insert a check-in into database', function() {
+    return testDB.CheckIn.create(checkin)
+      .then((result) => {
+        expect(result.user_id).to.equal(4);
+        expect(result.restaurant_id).to.equal(5);
+      });
+  });
+
+  it ('should insert a review into database', function() {
+    return testDB.Review.create(review)
+      .then((result) => {
+        expect(result.user_id).to.equal(6);
+        expect(result.restaurant_id).to.equal(7);
+        expect(result.star_rating).to.equal(5);
       });
   });
 });
