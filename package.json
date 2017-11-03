@@ -37,6 +37,7 @@
     "random-longitude": "^1.0.1",
     "random-zipcode": "^1.0.2",
     "request": "^2.83.0",
+    "request-promise": "^4.2.2",
     "txtgen": "^2.0.1",
     "zipcodes": "^5.1.0"
   }
