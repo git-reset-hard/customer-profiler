@@ -84,8 +84,6 @@ describe('Server', function () {
       json: true,
       body: badClick
     }, (err, res) => {
-      console.log('Actually got here?');
-      console.log(res.statusCode);
       expect(res.statusCode).to.equal(400);
       done();
     });
@@ -97,8 +95,6 @@ describe('Server', function () {
       json: true,
       body: badCheckin
     }, (err, res) => {
-      console.log('Actually got here?');
-      console.log(res.statusCode);
       expect(res.statusCode).to.equal(400);
       done();
     });
@@ -110,8 +106,6 @@ describe('Server', function () {
       json: true,
       body: badReview
     }, (err, res) => {
-      console.log('Actually got here?');
-      console.log(res.statusCode);
       expect(res.statusCode).to.equal(400);
       done();
     });
