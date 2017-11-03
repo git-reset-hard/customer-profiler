@@ -98,6 +98,36 @@ describe('Server', function () {
       });
   });
 
+  it ('should reject an invalid check-in', function() {
+    return request.post({
+      url: config.host + `:${config.port}/checkins`,
+      json: true,
+      body: badCheckin,
+      resolveWithFullResponse: true
+    })
+      .then((res) => {
+        expect(res.statusCode).to.equal(400);
+      })
+      .catch((err) => {
+        expect(err.statusCode).to.equal(400);
+      });
+  });
+
+  it ('should reject an invalid review', function() {
+    return request.post({
+      url: config.host + `:${config.port}/reviews`,
+      json: true,
+      body: badReview,
+      resolveWithFullResponse: true
+    })
+      .then((res) => {
+        expect(res.statusCode).to.equal(400);
+      })
+      .catch((err) => {
+        expect(err.statusCode).to.equal(400);
+      });
+  });
+
   
 });
 
