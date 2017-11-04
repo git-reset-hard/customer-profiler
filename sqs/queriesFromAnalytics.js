@@ -1,49 +1,22 @@
-const AWS = require('aws-sdk');
 const config = require('../config/config.js');
-
+const AWS = require('aws-sdk');
 AWS.config.loadFromPath('./config/config.json');
+const Consumer = require('sqs-consumer');
 
-const sqs = new AWS.SQS({apiVersion: '2012-11-05'});
-
-const params = {
-  QueueUrl: config.fromAnalytics,
-  AttributeNames: [
-    'SentTimestamp'
-  ],
-  MaxNumberOfMessages: 1,
-  MessageAttributeNames: [
-    'All'
-  ],
-  VisibilityTimeout: 0,
-  WaitTimeSeconds: 0
-};
-
-sqs.receiveMessage(params, function(err, data) {
-  if (err) {
-    console.log('Error receiving message: ', err);
-  } else {
+const app = Consumer.create({
+  queueUrl: config.fromAnalytics,
+  handleMessage: (message, done) => {
     // (maybe) reformat data to fit into db
     // add to queries DB
     // generate clicks (can't reuse current helpers, need to constrain rests)
     // post clicks to HTTP
-
-    var deleteParams = {
-      QueueUrl: config.fromAnalytics,
-      ReceiptHandle: data.Messages[0].ReceiptHandle // ???
-    };
-
-    sqs.deleteMessage(deleteParams, function(err, data) {
-      if (err) {
-        console.log('Delete Error', err);
-      } else {
-        console.log('Message Deleted', data);
-      }
-    });
-
-    console.log('Received message', data.MessageId);
-  }
+    done();
+  },
+  sqs: new AWS.SQS({apiVersion: '2012-11-05'})
 });
-
-module.exports = {
-
-};
+ 
+app.on('error', (err) => {
+  console.log(err.message);
+});
+ 
+app.start();
