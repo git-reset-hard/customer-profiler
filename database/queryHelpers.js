@@ -187,5 +187,6 @@ module.exports = {
   User: db.User,
   Restaurant: db.Restaurant,
   getUserProfile,
-  getRestaurantProfile
+  getRestaurantProfile,
+  Review: db.Review
 };

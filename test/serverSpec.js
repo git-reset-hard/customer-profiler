@@ -168,7 +168,9 @@ xdescribe('Database Schema', function () {
 });
 
 describe('Query Helpers', function () {
-  const testId = 9999999;
+  const testId = 99999999;
+  const goodRestId = testId;
+  const badRestId = testId + 1;
 
   const user = {
     numId: testId,
@@ -192,14 +194,38 @@ describe('Query Helpers', function () {
     agreeableness: .1
   };
 
-  const restaurant = {
-    numId: testId,
+  const goodRestaurant = {
+    numId: goodRestId,
     latitude: 37.773975,
-    longitude: -122.431295,
-    priceRange: 2,
-    rating: 4.5,
+    longitude: -122.0,
+    priceRange: 1,
+    rating: 5,
     categories: ['Sushi']
   };
+
+  const goodReview = {
+    restaurant_id: goodRestId,
+    user_id: testId,
+    star_rating: 5,
+    body: 'Best meal since sliced bread'
+  };
+
+  const badRestaurant = {
+    numId: badRestId,
+    latitude: 37.6,
+    longitude: -122.3,
+    priceRange: 1,
+    rating: 1.5,
+    categories: ['Deli']
+  };
+
+  const badReview = {
+    restaurant_id: badRestId,
+    user_id: testId,
+    star_rating: 1,
+    body: 'What did I even eat'
+  };
+
 
   after(() => {
     query.User.remove({numId: testId})
@@ -217,15 +243,33 @@ describe('Query Helpers', function () {
   });
 
   it ('should retrieve a restaurant from database', function() {
-    return query.Restaurant.create(restaurant)
+    return query.Restaurant.create(goodRestaurant)
       .then((result) => {
         return query.getRestaurantProfile(testId);
       })
       .then((result) => {
         expect(result[0].latitude).to.equal(37.773975);
-        expect(result[0].longitude).to.equal(-122.431295);
+        expect(result[0].longitude).to.equal(-122.0);
       });
   });
+
+  it ('should edit user preferences when a review is created', function() {
+    return query.addReview(goodReview)
+      .then(() => {
+        return query.getUserProfile(testId);
+      })
+      .then((user) => {
+        console.log(user[0]);
+        expect(user[0].stars[0]).to.equal(5);
+        expect(user[0].star_pref).to.equal(1);
+        expect(user[0].distances_traveled[0]).to.exist;
+        expect(user[0].distance_pref).to.equal(0);
+        expect(user[0].prices[0]).to.equal(1);
+        expect(user[0].price_pref[0]).to.equal(0); // need to fix this calc
+      });
+  });
+
+
 });
 
 // QUERY HELPERS
