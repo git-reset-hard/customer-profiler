@@ -1,6 +1,7 @@
 const db = require('./index.js');
 const es = require('../elasticsearch/index.js');
 const dataHelpers = require('./dataProcessingHelpers.js');
+const sqs = require('../sqs/sendData.js');
 
 const getUserProfile = function(userId) {
   return db.User.find({
@@ -14,8 +15,11 @@ const getRestaurantProfile = function(restId) {
   });
 };
 
+// updates user in DB
+// TODO: send message to other services also
 const updateUserPrefs = function(userId, star, distance, price, openness) {
-  return db.User.update({
+
+  return db.User.findOneAndUpdate({
     numId: userId
   }, {
     $set: {
@@ -24,7 +28,20 @@ const updateUserPrefs = function(userId, star, distance, price, openness) {
       price_pref: price,
       openness: openness
     }
+  }, {
+    returnNewDocument: true
   });
+
+//   return db.User.update({
+//     numId: userId
+//   }, {
+//     $set: {
+//       star_pref: star,
+//       distance_pref: distance,
+//       price_pref: price,
+//       openness: openness
+//     }
+//   });
 };
 
 const updateSingleUserProperty = function(userId, property, value) {
@@ -42,12 +59,18 @@ const updateSingleUserProperty = function(userId, property, value) {
 
 const updateUserProperties = function(userId, properties) {
   console.log(`updating user ${userId} with properties ${JSON.stringify(properties)}`);
-  return db.User.update({
+  return db.User.findOneAndUpdate({
     numId: userId
   }, {
     $set: properties
+  }, {
+    returnNewDocument: true
   })
-    .then((result) => console.log('Updated: ', result));
+    .then((result) => {
+      console.log('Updated: ', result);
+      sqs.sendData(result, 'toRestaurantProfiler');
+      sqs.sendData(result, 'toRecommender');
+    });
 };
 
 const getLikedRestaurants = function(userId) {
@@ -154,10 +177,13 @@ const addReview = function(review) {
       updatedUser.price_pref = dataHelpers.calcNormalizedAvg(updatedUser.prices, 'price');
       updatedUser.distance_pref = dataHelpers.calcNormalizedAvg(updatedUser.distances_traveled, 'distance');
       // watson call here (before update)
+      // sqs.sendData(updatedUser, 'toRestaurants');
       return updateUserProperties(userProfile.numId, updatedUser);
     })
 
-    .then(() => {
+    .then((result) => {
+      console.log('going to bus: ', result);
+      // sqs.sendData(result, 'toRecommender');
       console.log('Added review to DB; user prefs updated');
     })
     .catch((err) => console.log('Error adding check-in to DB ', err));

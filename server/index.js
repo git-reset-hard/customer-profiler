@@ -63,6 +63,7 @@ app.post('/checkins', function (req, res) {
 
   query.addCheckIn(checkIn)
     .then(() => res.status(200).send('Check-in POSTed'))
+    .then(() => aws.sendData(checkIn, 'toAnalytics'))
     .catch((err) => console.log('Error on check-in POST'));
 });
 
@@ -78,5 +79,6 @@ app.post('/reviews', function (req, res) {
 
   query.addReview(review)
     .then(() => res.status(200).send('Review POSTed'))
-    .catch((err) => console.log('Error on review POST'));
+    .then(() => aws.sendData(review, 'toAnalytics'))
+    .catch((err) => console.log('Error on review POST', err));
 });
