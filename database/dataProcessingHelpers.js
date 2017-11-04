@@ -54,7 +54,6 @@ calcDistancePref = function(data) {
   return ( avg ) / max;
 };
 
-
 module.exports = {
   calcDistance,
   formatCoordsToObj,

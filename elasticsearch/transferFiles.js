@@ -4,6 +4,8 @@ let logs, parsed;
 let logsToSend = [];
 const client = require('./index.js').client;
 const filePath = __dirname + '/logs.json';
+const path = require('path');
+// const filePath = path.join(__dirname, '..', 'data', 'elasticData', 'elasticSeedUsers.json');
 
 
 const read = Promise.promisify(fs.readFile);
