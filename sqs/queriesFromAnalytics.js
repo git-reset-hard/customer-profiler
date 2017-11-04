@@ -2,6 +2,7 @@ const config = require('../config/config.js');
 const AWS = require('aws-sdk');
 AWS.config.loadFromPath('./config/config.json');
 const Consumer = require('sqs-consumer');
+const helpers = require('../dataGeneration/seedHelpers.js');
 
 const app = Consumer.create({
   queueUrl: config.fromAnalytics,
@@ -20,3 +21,13 @@ app.on('error', (err) => {
 });
  
 app.start();
+
+// INCOMPLETE: finish after getting query format
+const makeClicksFromQuery = function(query) {
+  let clicks = [];
+  let restaurants = [];
+  // TODO: get list of restaurants
+  // randomize number of clicks = n
+  // randomize n restaurants
+
+};
