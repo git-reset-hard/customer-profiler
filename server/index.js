@@ -7,6 +7,7 @@ const fs = require('fs');
 const Promise = require('bluebird');
 const appendFile = Promise.promisify(fs.appendFile);
 const port = 8080;
+const aws = require('../sqs/busToAnalytics.js');
 
 app.listen(port, () => {
   console.log('Server listening on port ', port);
@@ -46,6 +47,7 @@ app.post('/clicks', function (req, res) {
 
   query.addClick(req.body)
     .then(() => res.status(200).send('Click POSTed'))
+    .then(() => aws.sendData(click, 'toAnalytics'))
     .catch((err) => res.status(400).send('Error on click POST'));
 });
 
