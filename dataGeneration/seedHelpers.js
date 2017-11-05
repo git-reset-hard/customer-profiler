@@ -62,12 +62,12 @@ const createUser = function (id) {
     liked_restaurants: [],
     latitude: randomLatitude(),
     longitude: randomLongitude(),
-    hometown_city: faker.address.city(),
-    openness: Math.random(),
-    conscientiousness: Math.random(),
-    achievement: Math.random(),
-    extraversion: Math.random(),
-    agreeableness: Math.random()
+    // hometown_city: faker.address.city(),
+    openness: null,
+    conscientiousness: null,
+    achievement: null,
+    extraversion: null,
+    agreeableness: null
   };
 };
 // console.log(createUser(7));
@@ -75,8 +75,6 @@ const createUser = function (id) {
 const createRestaurant = function (id) {
   return {
     numId: id,
-    // latitude: randomLatitude(),
-    // longitude: randomLongitude(),
     priceRange: randomizeRangeInclusive(1, 4),
     rating: randomizeRangeInclusive(1, 5),
     categories: randomizeCategories(),
