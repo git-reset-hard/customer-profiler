@@ -1,7 +1,15 @@
+const config = require('../config/config.js');
 const db = require('./index.js');
 const es = require('../elasticsearch/index.js');
 const dataHelpers = require('./dataProcessingHelpers.js');
 const sqs = require('../sqs/sendData.js');
+var PersonalityInsightsV3 = require('watson-developer-cloud/personality-insights/v3');
+ 
+var personality_insights = new PersonalityInsightsV3({
+  username: config.watsonUser,
+  password: config.watsonPassword,
+  version_date: '2016-10-19'
+});
 
 const getUserProfile = function(userId) {
   return db.User.find({
@@ -148,6 +156,7 @@ const addReview = function(review) {
       updatedUser.price_pref = dataHelpers.calcNormalizedAvg(updatedUser.prices, 'price');
       updatedUser.distance_pref = dataHelpers.calcNormalizedAvg(updatedUser.distances_traveled, 'distance');
       // watson call here (before update)
+      // pass in reviews property (updatedUser.reviews)
       return updateUserProperties(userProfile.numId, updatedUser);
     })
 
@@ -155,6 +164,20 @@ const addReview = function(review) {
       console.log('Added review to DB; user prefs updated');
     })
     .catch((err) => console.log('Error adding check-in to DB ', err));
+};
+
+const calcPersonality = function() {
+  personality_insights.profile({
+    text: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using , making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for lorem ipsum will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).',
+    consumption_preferences: true
+  },
+  function (err, response) {
+    if (err) {
+      console.log('error:', err);
+    } else {
+      console.log(JSON.stringify(response, null, 2));
+    }
+  });
 };
 
 // addReview({

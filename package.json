@@ -41,6 +41,7 @@
     "request-promise": "^4.2.2",
     "sqs-consumer": "^3.8.0",
     "txtgen": "^2.0.1",
+    "watson-developer-cloud": "^2.42.0",
     "zipcodes": "^5.1.0"
   }
 }
