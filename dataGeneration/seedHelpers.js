@@ -4,6 +4,7 @@ const randomLongitude = require('random-longitude');
 const randomDate = require('random-date-generator');
 const randomZipCode = require('random-zipcode');
 const randomText = require('txtgen');
+const zipcodes = require('zipcodes');
 faker.locale = 'en_US';
 
 const maxRestNum = 50000;
@@ -48,6 +49,8 @@ const randomizeCategories = function() {
 // ****** RANDOM ROW GENERATION ***** 
 
 const createUser = function (id) {
+  let coordinates = zipcodes.lookup(randomZipCode());
+
   return {
     numId: id,
     name: faker.name.firstName() + ' ' + faker.name.lastName()[0] + '.',
@@ -60,8 +63,8 @@ const createUser = function (id) {
     reviews: '',
     prices: [],
     liked_restaurants: [],
-    latitude: randomLatitude(),
-    longitude: randomLongitude(),
+    latitude: coordinates.latitude,
+    longitude: coordinates.longitude,
     // hometown_city: faker.address.city(),
     openness: null,
     conscientiousness: null,
@@ -70,7 +73,7 @@ const createUser = function (id) {
     agreeableness: null
   };
 };
-// console.log(createUser(7));
+console.log(createUser(7));
 
 const createRestaurant = function (id) {
   return {
