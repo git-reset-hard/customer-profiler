@@ -7,7 +7,7 @@ const fs = require('fs');
 const Promise = require('bluebird');
 const appendFile = Promise.promisify(fs.appendFile);
 const port = 8080;
-const aws = require('../sqs/busToAnalytics.js');
+const aws = require('../sqs/sendData.js');
 
 app.listen(port, () => {
   console.log('Server listening on port ', port);
