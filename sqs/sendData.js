@@ -7,7 +7,7 @@ const sqs = new AWS.SQS({apiVersion: '2012-11-05'});
 
 // takes data obj
 const sendData = function(data, queue) {
-  console.log('Data: ' + data + 'URL: ' + config[queue]);
+  // console.log('Data: ' + data + 'URL: ' + config[queue]);
   const params = {
     DelaySeconds: 10,
     MessageBody: JSON.stringify(data),
@@ -18,7 +18,7 @@ const sendData = function(data, queue) {
     if (err) {
       console.log('ERROR: ', err);
     } else {
-      console.log('Posted message to queue', data.MessageId);
+      // console.log('Posted message to queue', data.MessageId);
     }
   });
 };

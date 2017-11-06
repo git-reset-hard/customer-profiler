@@ -1,6 +1,12 @@
 const fs = require('fs');
 const helpers = require('../dataGeneration/seedHelpers.js');
 const NUM_OF_USERS = 500000;
+const batch1 = 100000;
+const batch2 = 200000;
+const batch3 = 300000;
+const batch4 = 400000;
+const batch5 = 500000;
+
 const sqs = require('../sqs/sendData.js');
 
 const writeUsers = function() {
@@ -8,7 +14,7 @@ const writeUsers = function() {
   const elasticWriteStream = fs.createWriteStream('./data/elasticData/elasticSeedUsers.json', {flags: 'a'});
 
   writeStream.write('[');
-  for (var i = 0; i < NUM_OF_USERS; i++) {
+  for (var i = batch4; i < batch5; i++) {
     let newUser = helpers.createUser(i);
 
     if (i) {
@@ -22,7 +28,7 @@ const writeUsers = function() {
     }
 
     writeStream.write(JSON.stringify(newUser));
-    // sqs.sendData(newUser, 'toRestaurantProfiler');
+    sqs.sendData(newUser, 'usersToAnalytics');
   }
   writeStream.write(']');
 

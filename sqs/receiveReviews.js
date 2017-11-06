@@ -22,15 +22,12 @@ const app = Consumer.create({
   handleMessage: (message, done) => {
     let messageBody = JSON.parse(message.Body);
 
-    console.log(message);
-
-
     // parse review here
     let review = {
       user_id: messageBody.userId,
       star_rating: messageBody.rating,
       time: messageBody.dates,
-      // body: messageBody.//TODO: FILL ME IN
+      body: 'PLACEHOLDER REPLACE ME'
     };
 
     // add review
