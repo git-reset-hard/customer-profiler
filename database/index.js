@@ -25,6 +25,7 @@ const userSchema = mongoose.Schema({
   latitude: Number,
   longitude: Number,
   hometown_city: String,
+  zipCode: Number,
   openness: Number,
   conscientiousness: Number,
   achievement: Number,

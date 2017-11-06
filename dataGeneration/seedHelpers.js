@@ -49,7 +49,13 @@ const randomizeCategories = function() {
 // ****** RANDOM ROW GENERATION ***** 
 
 const createUser = function (id) {
-  let coordinates = zipcodes.lookup(randomZipCode());
+  let zipcode = randomZipCode();
+  let coordinates = zipcodes.lookup(zipcode);
+
+  while (!coordinates) {
+    zipcode = randomZipCode();
+    coordinates = zipcodes.lookup(zipcode);
+  }
 
   return {
     numId: id,
@@ -65,7 +71,8 @@ const createUser = function (id) {
     liked_restaurants: [],
     latitude: coordinates.latitude,
     longitude: coordinates.longitude,
-    // hometown_city: faker.address.city(),
+    hometown_city: coordinates.city,
+    zipCode: zipcode,
     openness: null,
     conscientiousness: null,
     achievement: null,
@@ -73,7 +80,8 @@ const createUser = function (id) {
     agreeableness: null
   };
 };
-console.log(createUser(7));
+
+// console.log(createUser(1));
 
 const createRestaurant = function (id) {
   return {

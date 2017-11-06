@@ -1,6 +1,7 @@
 const fs = require('fs');
 const helpers = require('../dataGeneration/seedHelpers.js');
-const NUM_OF_USERS = 40000;
+const NUM_OF_USERS = 500000;
+const sqs = require('../sqs/sendData.js');
 
 const writeUsers = function() {
   const writeStream = fs.createWriteStream('./data/seedUsers.json', {flags: 'a'});
@@ -21,6 +22,7 @@ const writeUsers = function() {
     }
 
     writeStream.write(JSON.stringify(newUser));
+    // sqs.sendData(newUser, 'toRestaurantProfiler');
   }
   writeStream.write(']');
 
