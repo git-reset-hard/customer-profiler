@@ -7,6 +7,7 @@ const fs = require('fs');
 const Promise = require('bluebird');
 const appendFile = Promise.promisify(fs.appendFile);
 const port = 8080;
+const aws = require('../sqs/sendData.js');
 
 app.listen(port, () => {
   console.log('Server listening on port ', port);
@@ -46,6 +47,7 @@ app.post('/clicks', function (req, res) {
 
   query.addClick(req.body)
     .then(() => res.status(200).send('Click POSTed'))
+    .then(() => aws.sendData(click, 'toAnalytics'))
     .catch((err) => res.status(400).send('Error on click POST'));
 });
 
@@ -61,6 +63,7 @@ app.post('/checkins', function (req, res) {
 
   query.addCheckIn(checkIn)
     .then(() => res.status(200).send('Check-in POSTed'))
+    .then(() => aws.sendData(checkIn, 'toAnalytics'))
     .catch((err) => console.log('Error on check-in POST'));
 });
 
@@ -76,5 +79,6 @@ app.post('/reviews', function (req, res) {
 
   query.addReview(review)
     .then(() => res.status(200).send('Review POSTed'))
-    .catch((err) => console.log('Error on review POST'));
+    .then(() => aws.sendData(review, 'toAnalytics'))
+    .catch((err) => console.log('Error on review POST', err));
 });
