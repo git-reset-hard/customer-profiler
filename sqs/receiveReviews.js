@@ -21,7 +21,7 @@ const app = Consumer.create({
   queueUrl: config.reviewsFromRestaurants,
   handleMessage: (message, done) => {
     let messageBody = JSON.parse(message.Body);
-
+    console.log(messageBody);
     // parse review here
     let review = {
       user_id: messageBody.userId,
@@ -31,10 +31,10 @@ const app = Consumer.create({
     };
 
     // add review
-    queryHelpers.addReview(review);
+    // queryHelpers.addReview(review);
 
     review.type = 'review';
-    send.sendData(review, 'toAnalytics');
+    // send.sendData(review, 'toAnalytics');
 
     // done commented out so that messages are not deleted
     // done();

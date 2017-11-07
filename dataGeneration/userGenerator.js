@@ -13,6 +13,7 @@ const writeUsers = function() {
   const writeStream = fs.createWriteStream('./data/seedUsers.json', {flags: 'a'});
   const elasticWriteStream = fs.createWriteStream('./data/elasticData/elasticSeedUsers.json', {flags: 'a'});
 
+  // REMOVE BRACKETS IF BATCHING!!!
   writeStream.write('[');
   for (var i = batch4; i < batch5; i++) {
     let newUser = helpers.createUser(i);

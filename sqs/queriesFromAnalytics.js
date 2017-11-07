@@ -3,6 +3,7 @@ const AWS = require('aws-sdk');
 AWS.config.loadFromPath('./config/config.json');
 const Consumer = require('sqs-consumer');
 const helpers = require('../dataGeneration/seedHelpers.js');
+const queryHelpers = require('../database/queryHelpers.js');
 
 
 // SAMPLE OUTPUT: 
@@ -16,17 +17,20 @@ const app = Consumer.create({
   handleMessage: (message, done) => {
     let messageBody = JSON.parse(message.Body);
 
-    console.log(message);
     let query = {
-      _id: messageBody.id,
+      _id: messageBody.queryID,
       search_term: messageBody.searchTerm,
-      list_id: messageBody.servedList // receiving actual list of restaurants
+      location: messageBody.location,
+      list_id: messageBody.servedList,
     };
-    // (maybe) reformat data to fit into db
+
     // add to queries DB
+    queryHelpers.addQuery(query);
     // generate clicks (can't reuse current helpers, need to constrain rests)
-    // post clicks to HTTP
-    done();
+    // addClick
+
+
+    // done();
   },
   sqs: new AWS.SQS({apiVersion: '2012-11-05'})
 });
@@ -38,9 +42,23 @@ app.on('error', (err) => {
 app.start();
 
 // INCOMPLETE: finish after getting query format
-const makeClicksFromQuery = function(query) {
+const makeClicksFromQuery = function(query, user) {
   let clicks = [];
-  let restaurants = [];
+  let restaurants = query.list;
+  let randomIndex;
+
+  let numOfClicks = helpers.randomizeRangeInclusive(1, 10);
+
+  for (let i = 0; i < numOfClicks; i++) {
+    randomIndex = randomizeRangeInclusive(1, 10);
+
+    if (!clicks.includes(restaurants[randomIndex])) {
+      clicks.push(restaurants[randomIndex]);
+    }
+  }
+
+  
+
   // TODO: get list of restaurants
   // randomize number of clicks = n
   // randomize n restaurants

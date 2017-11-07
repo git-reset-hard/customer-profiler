@@ -8,7 +8,7 @@ const zipcodes = require('zipcodes');
 faker.locale = 'en_US';
 
 const maxRestNum = 50000;
-const maxUserNum = 40000;
+const maxUserNum = 500000;
 const maxQueryNum = 2000000;
 
 // ****** RANDOM PROPERTY HELPERS ***** 

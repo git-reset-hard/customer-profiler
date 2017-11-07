@@ -73,6 +73,12 @@ const addUserTravelDistance = function(userId, distance) {
 };
 
 const addClick = function(click) {
+  if (Array.isArray(click)) {
+    return db.Click.insertMany(click)
+      .then((result) => console.log('Added batch of clicks to DB ', result))
+      .catch((err) => { console.log('Error adding click to DB ', err); }); // remove logging when adding whole batch
+  } 
+
   return db.Click.create(click)
     .then((result) => console.log('Added click to DB ', result))
     .catch((err) => { console.log('Error adding click to DB ', err); });
@@ -163,7 +169,7 @@ const addReview = function(review) {
 
     .then((result) => {
       console.log('Added review to DB; user prefs updated');
-      
+
     })
     .catch((err) => console.log('Error adding check-in to DB ', err));
 };
@@ -191,6 +197,10 @@ const fakeCalcPersonality = function(reviews) {
     extraversion: Math.random(),
     agreeableness: Math.random()
   };
+};
+
+const addQuery = function(query) {
+  return
 };
 
 // addReview({
