@@ -200,7 +200,7 @@ const fakeCalcPersonality = function(reviews) {
 };
 
 const addQuery = function(query) {
-  return
+  return db.Query.create(query);
 };
 
 // addReview({

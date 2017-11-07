@@ -24,11 +24,9 @@ const app = Consumer.create({
       list_id: messageBody.servedList,
     };
 
-    // add to queries DB
-    queryHelpers.addQuery(query);
-    // generate clicks (can't reuse current helpers, need to constrain rests)
-    // addClick
+    // queryHelpers.addQuery(query);
 
+    makeClicksFromQuery(query, messageBody.userId);
 
     // done();
   },
@@ -42,7 +40,8 @@ app.on('error', (err) => {
 app.start();
 
 // INCOMPLETE: finish after getting query format
-const makeClicksFromQuery = function(query, user) {
+const makeClicksFromQuery = function(query, userId) {
+  let clickedRestaurants = [];
   let clicks = [];
   let restaurants = query.list;
   let randomIndex;
@@ -52,15 +51,20 @@ const makeClicksFromQuery = function(query, user) {
   for (let i = 0; i < numOfClicks; i++) {
     randomIndex = randomizeRangeInclusive(1, 10);
 
-    if (!clicks.includes(restaurants[randomIndex])) {
-      clicks.push(restaurants[randomIndex]);
+    if (!clickedRestaurants.includes(restaurants[randomIndex])) {
+      clickedRestaurants.push(restaurants[randomIndex]);
     }
   }
 
-  
+  for (let i = 0; i < clickedRestaurants.length; i++) {
+    clicks.push({
+      restaurant_id: clickedRestaurants[i],
+      user_id: userId,
+      query_id: query._id,
+      time: Date.now()
+    });
+  }
 
-  // TODO: get list of restaurants
-  // randomize number of clicks = n
-  // randomize n restaurants
-
+  console.log(clicks);
+  // queryHelpers.addClick(clicks);
 };
