@@ -203,6 +203,11 @@ const addQuery = function(query) {
   return db.Query.create(query);
 };
 
+const addRestaurants = function(restaurant) {
+  return db.Restaurant.insertMany(restaurant)
+    // .then((result) => console.log('added ', result))
+    .catch((err) => console.log('error adding rest to db', err));
+};
 // addReview({
 //   user_id: 59,
 //   restaurant_id: 60,
@@ -228,5 +233,7 @@ module.exports = {
   Restaurant: db.Restaurant,
   getUserProfile,
   getRestaurantProfile,
-  Review: db.Review
+  Review: db.Review,
+  addQuery,
+  addRestaurants
 };

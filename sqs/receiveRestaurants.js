@@ -30,16 +30,43 @@ const send = require('../sqs/sendData.js');
 //   rating: Number,
 //   categories: Array
 
+let restaurants = [];
+let count = 0;
+
 const app = Consumer.create({
   queueUrl: config.restaurantsFromRestaurants,
   handleMessage: (message, done) => {
+    // console.log('RUNNING');
+    let messages = [];
+    count++;
+    console.log(count);
     let messageBody = JSON.parse(message.Body);
-    console.log(messageBody);
+
+    messages.push(messageBody);
+    messages.forEach((message) => {
+      restaurants.push(formatRestaurant(message));
+    });
+
+    // console.log(restaurants);
+
+    // console.log(formatRestaurant(restaurant));
+    if (restaurants.length === 10) {
+      app.stop();
+      queryHelpers.addRestaurants(restaurants)
+        .then(() => {
+          console.log('added batch of length: ');
+          restaurants = [];
+          app.start();
+        })
+        .catch((err) => console.log('error adding restaurants ', err));
+    }
 
     // done commented out so that messages are not deleted
-    // done();
+    done();
   },
-  sqs: new AWS.SQS({apiVersion: '2012-11-05'})
+  sqs: new AWS.SQS({apiVersion: '2012-11-05'}),
+  batchSize: 10,
+  terminateVisibilityTimeout: true
 });
  
 app.on('error', (err) => {
