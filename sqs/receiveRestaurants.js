@@ -6,7 +6,6 @@ const helpers = require('../dataGeneration/seedHelpers.js');
 const queryHelpers = require('../database/queryHelpers.js');
 const send = require('../sqs/sendData.js');
 
-
 // SAMPLE OUTPUT OF MESSAGEBODY: 
 // { name: 'Mohamed Sanford',
 //   phone: '+14073900703',
@@ -24,7 +23,12 @@ const send = require('../sqs/sendData.js');
 //   id: 704 }
 
 // TARGET SCHEMA
-
+//   numId: Number,
+//   latitude: Number,
+//   longitude: Number,
+//   priceRange: Number,
+//   rating: Number,
+//   categories: Array
 
 const app = Consumer.create({
   queueUrl: config.restaurantsFromRestaurants,
@@ -43,3 +47,14 @@ app.on('error', (err) => {
 });
  
 app.start();
+
+const formatRestaurant = function(restaurant) {
+  return {
+    numId: restaurant.id,
+    latitude: Number(restaurant.latitude),
+    longitude: Number(restaurant.longitude),
+    priceRange: Number(restaurant.price),
+    rating: restaurant.rating,
+    categories: restaurant.categories 
+  };
+};
