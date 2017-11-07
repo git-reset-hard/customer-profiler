@@ -50,7 +50,7 @@ const app = Consumer.create({
     // console.log(restaurants);
 
     // console.log(formatRestaurant(restaurant));
-    if (restaurants.length === 10) {
+    if (restaurants.length === 100) {
       app.stop();
       queryHelpers.addRestaurants(restaurants)
         .then(() => {
@@ -60,6 +60,9 @@ const app = Consumer.create({
         })
         .catch((err) => console.log('error adding restaurants ', err));
     }
+
+    // add a listener for end of messages to get remainder < 100
+
 
     // done commented out so that messages are not deleted
     done();
@@ -71,6 +74,15 @@ const app = Consumer.create({
  
 app.on('error', (err) => {
   console.log(err.message);
+});
+
+app.on('empty', () => {
+  console.log('queue empty');
+  queryHelpers.addRestaurants(restaurants)
+    .then(() => {
+      console.log('added final batch');
+    })
+    .catch((err) => console.log(err));
 });
  
 app.start();
