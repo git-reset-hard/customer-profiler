@@ -1,10 +1,6 @@
 # Yelp-alitics Customer Profiler
 
-Generates customer profile/restaurant preferences based on clicks, check-ins, and reviews.
-
-## Roadmap
-
-View the project roadmap [here](https://docs.google.com/spreadsheets/d/1KmNzdBwZN6pfllJ3b-JZxu4imRT7uQpOzQDzl5VosUI/edit?usp=sharing)
+Generates customer profile/restaurant preferences based on user check-ins, and reviews. This is a microservice intended to integrate with the entire [Yelp-alitics system](https://github.com/git-reset-hard).
 
 ## Contributing
 
@@ -16,23 +12,43 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 1. [Requirements](#requirements)
 1. [Development](#development)
     1. [Installing Dependencies](#installing-dependencies)
-    1. [Tasks](#tasks)
+    1. [Architecture Information](#architecture-information)
+    1. [Roadmap](#roadmap)
 
 ## Usage
 
-> Some usage instructions
+#### Setup
+Create a MongoDB database to hold customer profiler data with the following collections: users; restaurants; reviews; check-ins; clicks; queries.
+
+#### Data Generation
+To run this in isolation from other microservices, simulated data needs to be generated. Create a set of simulated historical data using the following steps:
+
+1. Generate simulated restaurants, users, and user clicks, reviews, check-ins, and queries by running the scripts that end in Generator.js in the dataGeneration folder. This will add a JSON file for each collection in a MongoDB-friendly format to the data folder.
+
+1. Import each generated file into MongoDB using the following command:
+
+```mongoimport --db YOUR_DB_NAME --collection YOUR_COLLECTION --drop --file YOUR_FILE_PATH/data/FILENAME --jsonArray```
+
+#### Streaming Simulated Data
+To simulate the flow of data into the system, run dataGeneration/streamData.js
+
+#### Streaming Data
+This service accepts data via Amazon Web Services SQS. The `sqs` folder contains the scripts that need to be running in order to receive messages from other services. 
 
 ## Requirements
 
 - Node 6.11.1
-- Postgresql 10.0
-- Express 4.16.2
-- Sequelize 4.15.1
+- MongoDB 3.4
 
 ## Installing Dependencies
-npm install
+Install dependencies with ```npm install```
 
-## Other Information
+## Architecture Information
 
 [Architecture diagram](https://drive.google.com/file/d/0B9cmTzZi_cK_VGNyejlVay1UQ0E/view?usp=sharing)
+
 [Schema](https://drive.google.com/file/d/0B9cmTzZi_cK_WVVEOVhSaHRqZWM/view?usp=sharing)
+
+## Roadmap
+
+View the project roadmap [here](https://docs.google.com/spreadsheets/d/1KmNzdBwZN6pfllJ3b-JZxu4imRT7uQpOzQDzl5VosUI/edit?usp=sharing)
